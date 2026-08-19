@@ -12,11 +12,12 @@ The system is developed using core, framework-free web technologies to strengthe
 
 ## Team Members
 
-| No. | Member                  | GitHub                                                           | Role             |
-| --- | ----------------------- | ---------------------------------------------------------------- | ---------------- |
-| 1   | Mohammad Shihab Hossain | [https://github.com/Zul-Qarnain](https://github.com/Zul-Qarnain) | **Group Leader** |
-| 2   | Md Naimul Haque Tashin  | [https://github.com/Tashin90](https://github.com/Tashin90)       | Member           |
-| 3   | Rahul Roy               | [https://github.com/Rahul53662](https://github.com/Rahul53662)   | Member           |
+| No. | Member                  | GitHub                                                                 | Role             |
+| --- | ----------------------- | ---------------------------------------------------------------------- | ---------------- |
+| 1   | Mohammad Shihab Hossain | [https://github.com/Zul-Qarnain](https://github.com/Zul-Qarnain)       | **Group Leader** |
+| 2   | Md Naimul Haque Tashin  | [https://github.com/Tashin90](https://github.com/Tashin90)             | Member           |
+| 3   | Rahul Roy               | [https://github.com/Rahul53662](https://github.com/Rahul53662)         | Member           |
+| 4   | Md Mahir Labib          | [https://github.com/Md-Mahir-Labib](https://github.com/Md-Mahir-Labib) | Member           |
 
 ## Technology Stack
 
