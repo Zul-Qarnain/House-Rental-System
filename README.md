@@ -101,13 +101,6 @@ The project follows these major phases:
 5. Integration & Testing
 6. Final Documentation & Presentation
 
-## Team Repository References
-
-The project team members' GitHub profiles are listed in contribution order, with the first member serving as the group leader.
-
-* **1 — Group Leader:** [https://github.com/Zul-Qarnain](https://github.com/Zul-Qarnain)
-* **2 — Member:** [https://github.com/Tashin90](https://github.com/Tashin90)
-* **3 — Member:** [https://github.com/Rahul53662](https://github.com/Rahul53662)
 
 ## Project Links
 
@@ -115,3 +108,6 @@ The project team members' GitHub profiles are listed in contribution order, with
 * **👤 Group Leader GitHub:** [https://github.com/Zul-Qarnain](https://github.com/Zul-Qarnain)
 * **👤 Team Member GitHub:** [https://github.com/Tashin90](https://github.com/Tashin90)
 * **👤 Team Member GitHub:** [https://github.com/Rahul53662](https://github.com/Rahul53662)
+* **👤 Team Member GitHub:** [https://github.com/Md-Mahir-Labib](https://github.com/Md-Mahir-Labib)
+
+
