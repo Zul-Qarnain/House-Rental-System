@@ -86,6 +86,14 @@ class RentalController extends Controller {
         $reviews = $reviewModel->findByOwner($owner['user_id']);
         $notifications = $this->notificationModel->findByUser($owner['user_id']);
 
+        $userModel = new User();
+        $brokers = $userModel->getByRole('broker');
+        $assignmentModel = new BrokerAssignment();
+
+        foreach ($properties as &$p) {
+            $p['active_broker'] = $assignmentModel->findActiveByProperty($p['property_id']);
+        }
+
         $this->render('owner/dashboard', [
             'user' => $owner,
             'properties' => $properties,
@@ -93,6 +101,7 @@ class RentalController extends Controller {
             'agreements' => $agreements,
             'reviews' => $reviews,
             'notifications' => $notifications,
+            'brokers' => $brokers,
             'csrf_token' => Auth::csrfToken()
         ]);
     }
@@ -147,6 +156,7 @@ class RentalController extends Controller {
                 'rental_agreement',
                 $agreementId
             );
+            $_SESSION['success'] = "Rental request approved!";
         } else {
             $this->requestModel->updateStatus($requestId, 'rejected', $user['user_id']);
             $this->notificationModel->create(
@@ -156,6 +166,7 @@ class RentalController extends Controller {
                 'rental_request',
                 $requestId
             );
+            $_SESSION['success'] = "Rental request rejected.";
         }
 
         $this->redirect($user['role'] === 'owner' ? '/owner/dashboard' : '/admin/users');

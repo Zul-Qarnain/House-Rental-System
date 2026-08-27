@@ -52,6 +52,7 @@ $router->add('GET', '/owner/dashboard', 'RentalController@ownerDashboard');
 $router->add('GET', '/properties/create', 'PropertyController@showCreateForm');
 $router->add('POST', '/properties/create', 'PropertyController@processCreate');
 $router->add('POST', '/properties/toggle-status', 'PropertyController@toggleAvailability');
+$router->add('POST', '/owner/properties/assign-broker', 'PropertyController@assignBroker');
 $router->add('POST', '/rentals/decision', 'RentalController@processDecision');
 $router->add('POST', '/reviews/reply', 'ReviewController@processReply');
 

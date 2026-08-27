@@ -108,6 +108,36 @@ class PropertyController extends Controller {
         $property = $this->propertyModel->findById($propertyId);
         if ($property && $property['owner_id'] === Auth::user()['user_id']) {
             $this->propertyModel->updateStatus($propertyId, $status);
+            $_SESSION['success'] = "Property status updated to {$status}.";
+        }
+
+        $this->redirect('/owner/dashboard');
+    }
+
+    public function assignBroker(): void {
+        Auth::requireRole('owner');
+        if (!Auth::verifyCsrf($_POST['csrf_token'] ?? '')) {
+            http_response_code(400);
+            echo "Invalid CSRF token.";
+            return;
+        }
+
+        $propertyId = (int)($_POST['property_id'] ?? 0);
+        $brokerId = (int)($_POST['broker_id'] ?? 0);
+
+        $property = $this->propertyModel->findById($propertyId);
+        if (!$property || $property['owner_id'] !== Auth::user()['user_id']) {
+            $_SESSION['error'] = "Unauthorized or property not found.";
+            $this->redirect('/owner/dashboard');
+            return;
+        }
+
+        $assignmentModel = new BrokerAssignment();
+        try {
+            $assignmentModel->assign($brokerId, $propertyId);
+            $_SESSION['success'] = "Broker assigned successfully to '{$property['title']}'.";
+        } catch (Exception $e) {
+            $_SESSION['error'] = "Failed to assign broker: " . $e->getMessage();
         }
 
         $this->redirect('/owner/dashboard');
