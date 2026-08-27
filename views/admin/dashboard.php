@@ -1,14 +1,44 @@
 <?php require __DIR__ . '/../layout/header.php'; ?>
 <?php require __DIR__ . '/../layout/nav.php'; ?>
 <main class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1">
-    <div class="mb-8">
-        <h1 class="font-headline-xl text-2xl font-bold text-on-surface">Admin Control Center</h1>
-        <p class="text-sm text-on-surface-variant">Manage platform users, property verification, broker assignments, resolution desk & audit logs.</p>
+    <div class="mb-8 flex items-center justify-between">
+        <div>
+            <h1 class="font-headline-xl text-2xl font-bold text-on-surface flex items-center gap-2">
+                <span class="material-symbols-outlined text-[28px] text-on-tertiary-container">admin_panel_settings</span>
+                Admin Control Center
+            </h1>
+            <p class="text-sm text-on-surface-variant mt-1">Manage platform users, property verification, broker assignments, resolution desk & audit logs.</p>
+        </div>
     </div>
+
+    <?php if (isset($_SESSION['success'])): ?>
+        <div class="mb-6 p-4 rounded-xl bg-tertiary-container text-on-tertiary-container border border-tertiary-fixed text-sm font-semibold flex items-center justify-between shadow-sm">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined">check_circle</span>
+                <span><?= htmlspecialchars($_SESSION['success']) ?></span>
+            </div>
+            <button onclick="this.parentElement.remove()" class="text-on-tertiary-container hover:opacity-75">&times;</button>
+        </div>
+        <?php unset($_SESSION['success']); ?>
+    <?php endif; ?>
+
+    <?php if (isset($_SESSION['error'])): ?>
+        <div class="mb-6 p-4 rounded-xl bg-error-container text-on-error-container border border-error/30 text-sm font-semibold flex items-center justify-between shadow-sm">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined">error</span>
+                <span><?= htmlspecialchars($_SESSION['error']) ?></span>
+            </div>
+            <button onclick="this.parentElement.remove()" class="text-on-error-container hover:opacity-75">&times;</button>
+        </div>
+        <?php unset($_SESSION['error']); ?>
+    <?php endif; ?>
 
     <!-- User Management Table -->
     <div class="mb-10">
-        <h2 class="text-lg font-bold text-on-surface mb-4">User Accounts & Roles</h2>
+        <h2 class="text-lg font-bold text-on-surface mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-[20px]">group</span>
+            User Accounts & Roles
+        </h2>
         <div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm">
             <table class="w-full text-left text-sm">
                 <thead class="bg-surface-container-low text-xs uppercase text-on-surface-variant border-b border-outline-variant">
@@ -22,19 +52,19 @@
                 </thead>
                 <tbody class="divide-y divide-outline-variant/50">
                     <?php foreach ($users as $u): ?>
-                        <tr>
+                        <tr class="hover:bg-surface-container-low/50 transition-colors">
                             <td class="p-4 font-mono text-xs text-on-surface">#<?= $u['user_id'] ?></td>
                             <td class="p-4 text-on-surface">
                                 <div class="font-semibold"><?= htmlspecialchars($u['name']) ?></div>
                                 <div class="text-xs text-on-surface-variant"><?= htmlspecialchars($u['email']) ?></div>
                             </td>
                             <td class="p-4">
-                                <span class="px-2 py-0.5 rounded text-xs font-semibold uppercase bg-surface-container-high text-on-surface">
+                                <span class="px-2.5 py-1 rounded-md text-xs font-semibold uppercase bg-surface-container-high text-on-surface border border-outline-variant">
                                     <?= htmlspecialchars($u['role']) ?>
                                 </span>
                             </td>
                             <td class="p-4">
-                                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase <?= $u['is_active'] ? 'bg-tertiary-container text-on-tertiary-container' : 'bg-error-container text-on-error-container' ?>">
+                                <span class="px-2.5 py-1 rounded-full text-xs font-semibold uppercase <?= $u['is_active'] ? 'bg-tertiary-container text-on-tertiary-container' : 'bg-error-container text-on-error-container' ?>">
                                     <?= $u['is_active'] ? 'Active' : 'Deactivated' ?>
                                 </span>
                             </td>
@@ -43,7 +73,7 @@
                                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
                                     <input type="hidden" name="user_id" value="<?= $u['user_id'] ?>">
                                     <input type="hidden" name="is_active" value="<?= $u['is_active'] ? 0 : 1 ?>">
-                                    <button type="submit" class="text-xs px-3 py-1 rounded font-semibold <?= $u['is_active'] ? 'bg-error-container text-on-error-container hover:bg-error/20' : 'bg-tertiary-container text-on-tertiary-container hover:bg-tertiary-fixed' ?>">
+                                    <button type="submit" class="text-xs px-3 py-1.5 rounded-lg font-semibold transition-colors <?= $u['is_active'] ? 'bg-error-container text-on-error-container hover:bg-error/20' : 'bg-tertiary-container text-on-tertiary-container hover:bg-tertiary-fixed' ?>">
                                         <?= $u['is_active'] ? 'Deactivate' : 'Activate' ?>
                                     </button>
                                 </form>
@@ -57,7 +87,10 @@
 
     <!-- Property Verification & Broker Assignment Desk -->
     <div class="mb-10">
-        <h2 class="text-lg font-bold text-on-surface mb-4">Property Approvals & Broker Assignment</h2>
+        <h2 class="text-lg font-bold text-on-surface mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-[20px]">real_estate_agent</span>
+            Property Approvals & Broker Assignment
+        </h2>
         <div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm">
             <table class="w-full text-left text-sm">
                 <thead class="bg-surface-container-low text-xs uppercase text-on-surface-variant border-b border-outline-variant">
@@ -71,7 +104,7 @@
                 </thead>
                 <tbody class="divide-y divide-outline-variant/50">
                     <?php foreach ($properties as $p): ?>
-                        <tr>
+                        <tr class="hover:bg-surface-container-low/50 transition-colors">
                             <td class="p-4 font-mono text-xs text-on-surface">#<?= $p['property_id'] ?></td>
                             <td class="p-4 text-on-surface">
                                 <div class="font-semibold"><?= htmlspecialchars($p['title']) ?></div>
@@ -79,30 +112,38 @@
                             </td>
                             <td class="p-4 text-on-surface-variant text-xs">
                                 <div><?= htmlspecialchars($p['city']) ?></div>
-                                <div class="font-bold text-on-surface">$<?= number_format($p['price_per_month'], 2) ?></div>
+                                <div class="font-bold text-on-surface">$<?= number_format($p['price_per_month'], 2) ?>/mo</div>
                             </td>
                             <td class="p-4">
-                                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase <?= $p['is_approved'] ? 'bg-tertiary-container text-on-tertiary-container' : 'bg-secondary-container text-on-secondary-container' ?>">
+                                <span class="px-2.5 py-1 rounded-full text-xs font-semibold uppercase <?= $p['is_approved'] ? 'bg-tertiary-container text-on-tertiary-container' : 'bg-secondary-container text-on-secondary-container' ?>">
                                     <?= $p['is_approved'] ? 'Approved' : 'Pending' ?>
                                 </span>
                             </td>
-                            <td class="p-4 text-right flex items-center justify-end gap-2">
-                                <?php if (!$p['is_approved']): ?>
-                                    <form action="/admin/properties/approve" method="POST" class="inline">
+                            <td class="p-4 text-right">
+                                <div class="flex items-center justify-end gap-2 flex-wrap">
+                                    <?php if (!$p['is_approved']): ?>
+                                        <form action="/admin/properties/approve" method="POST" class="inline">
+                                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
+                                            <input type="hidden" name="property_id" value="<?= $p['property_id'] ?>">
+                                            <input type="hidden" name="is_approved" value="1">
+                                            <input type="hidden" name="is_verified" value="1">
+                                            <button type="submit" class="bg-tertiary-container text-on-tertiary-container text-xs px-3 py-1.5 rounded-lg font-semibold hover:bg-tertiary-fixed transition-colors">Approve</button>
+                                        </form>
+                                    <?php endif; ?>
+
+                                    <!-- Broker Assignment Dropdown Form -->
+                                    <form action="/admin/properties/assign-broker" method="POST" class="inline-flex gap-1 items-center">
                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
                                         <input type="hidden" name="property_id" value="<?= $p['property_id'] ?>">
-                                        <input type="hidden" name="is_approved" value="1">
-                                        <input type="hidden" name="is_verified" value="1">
-                                        <button type="submit" class="bg-tertiary-container text-on-tertiary-container text-xs px-3 py-1 rounded font-semibold hover:bg-tertiary-fixed">Approve</button>
+                                        <select name="broker_id" required class="text-xs px-2 py-1.5 border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface">
+                                            <option value="">-- Select Broker --</option>
+                                            <?php foreach ($brokers as $b): ?>
+                                                <option value="<?= $b['user_id'] ?>"><?= htmlspecialchars($b['name']) ?> (#<?= $b['user_id'] ?>)</option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                        <button type="submit" class="bg-primary-container text-on-primary text-xs px-3 py-1.5 rounded-lg font-semibold hover:bg-on-primary-fixed transition-colors">Assign</button>
                                     </form>
-                                <?php endif; ?>
-                                <!-- Broker Assignment Form -->
-                                <form action="/admin/properties/assign-broker" method="POST" class="inline-flex gap-1">
-                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
-                                    <input type="hidden" name="property_id" value="<?= $p['property_id'] ?>">
-                                    <input type="number" name="broker_id" required placeholder="Broker ID" class="w-20 text-xs px-2 py-1 border border-outline-variant rounded bg-surface-container-lowest"/>
-                                    <button type="submit" class="bg-primary-container text-on-primary text-xs px-2.5 py-1 rounded font-semibold hover:bg-on-primary-fixed">Assign</button>
-                                </form>
+                                </div>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -113,7 +154,10 @@
 
     <!-- Complaints Resolution Desk -->
     <div class="mb-10">
-        <h2 class="text-lg font-bold text-on-surface mb-4">Resolution Desk (Complaints)</h2>
+        <h2 class="text-lg font-bold text-on-surface mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-[20px]">gavel</span>
+            Resolution Desk (Complaints)
+        </h2>
         <?php if (empty($complaints)): ?>
             <div class="bg-surface-container-lowest border border-outline-variant p-6 rounded-xl text-sm text-on-surface-variant">
                 No active complaints filed.
@@ -133,7 +177,7 @@
                     </thead>
                     <tbody class="divide-y divide-outline-variant/50">
                         <?php foreach ($complaints as $c): ?>
-                            <tr>
+                            <tr class="hover:bg-surface-container-low/50 transition-colors">
                                 <td class="p-4 font-mono text-xs text-on-surface">#<?= $c['complaint_id'] ?></td>
                                 <td class="p-4 text-on-surface font-semibold"><?= htmlspecialchars($c['filer_name']) ?></td>
                                 <td class="p-4 text-xs text-on-surface-variant">
@@ -141,7 +185,7 @@
                                 </td>
                                 <td class="p-4 text-xs text-on-surface-variant max-w-xs"><?= htmlspecialchars($c['description']) ?></td>
                                 <td class="p-4">
-                                    <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase bg-secondary-container text-on-secondary-container">
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold uppercase bg-secondary-container text-on-secondary-container">
                                         <?= htmlspecialchars($c['status']) ?>
                                     </span>
                                 </td>
@@ -150,7 +194,7 @@
                                         <form action="/admin/complaints/resolve" method="POST" class="inline">
                                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
                                             <input type="hidden" name="complaint_id" value="<?= $c['complaint_id'] ?>">
-                                            <button type="submit" name="status" value="resolved" class="bg-tertiary-container text-on-tertiary-container text-xs px-3 py-1 rounded font-semibold">Resolve</button>
+                                            <button type="submit" name="status" value="resolved" class="bg-tertiary-container text-on-tertiary-container text-xs px-3 py-1.5 rounded-lg font-semibold hover:bg-tertiary-fixed transition-colors">Resolve</button>
                                         </form>
                                     <?php else: ?>
                                         <span class="text-xs text-outline italic">Resolved</span>
@@ -166,7 +210,10 @@
 
     <!-- Admin Audit Trail -->
     <div>
-        <h2 class="text-lg font-bold text-on-surface mb-4">Admin Audit Trail (admin_actions)</h2>
+        <h2 class="text-lg font-bold text-on-surface mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-[20px]">history</span>
+            Admin Audit Trail (admin_actions)
+        </h2>
         <div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm">
             <table class="w-full text-left text-sm">
                 <thead class="bg-surface-container-low text-xs uppercase text-on-surface-variant border-b border-outline-variant">
@@ -180,7 +227,7 @@
                 </thead>
                 <tbody class="divide-y divide-outline-variant/50">
                     <?php foreach ($audit_logs as $log): ?>
-                        <tr>
+                        <tr class="hover:bg-surface-container-low/50 transition-colors">
                             <td class="p-4 font-mono text-xs text-on-surface">#<?= $log['action_id'] ?></td>
                             <td class="p-4 text-on-surface font-semibold"><?= htmlspecialchars($log['admin_name']) ?></td>
                             <td class="p-4 font-semibold text-xs text-on-tertiary-container uppercase"><?= htmlspecialchars($log['action_type']) ?></td>

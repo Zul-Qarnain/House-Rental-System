@@ -20,6 +20,7 @@ class AdminController extends Controller {
         $properties = $this->propertyModel->getAllForAdmin();
         $complaints = $this->complaintModel->findAll();
         $auditLogs = $this->auditModel->findAll();
+        $brokers = $this->userModel->getByRole('broker');
 
         $this->render('admin/dashboard', [
             'admin' => Auth::user(),
@@ -27,6 +28,7 @@ class AdminController extends Controller {
             'properties' => $properties,
             'complaints' => $complaints,
             'audit_logs' => $auditLogs,
+            'brokers' => $brokers,
             'csrf_token' => Auth::csrfToken()
         ]);
     }
@@ -44,6 +46,7 @@ class AdminController extends Controller {
 
         $this->userModel->updateStatus($userId, $isActive);
         $this->auditModel->log(Auth::user()['user_id'], $isActive ? 'ACTIVATE_USER' : 'DEACTIVATE_USER', 'user', $userId);
+        $_SESSION['success'] = $isActive ? "User #{$userId} activated." : "User #{$userId} deactivated.";
 
         $this->redirect('/admin/users');
     }
@@ -62,6 +65,7 @@ class AdminController extends Controller {
 
         $this->propertyModel->updateApproval($propertyId, $isApproved, $isVerified);
         $this->auditModel->log(Auth::user()['user_id'], 'APPROVE_PROPERTY', 'property', $propertyId, 'Property approved and verified.');
+        $_SESSION['success'] = "Property #{$propertyId} approved and verified successfully.";
 
         $this->redirect('/admin/users');
     }
@@ -80,7 +84,7 @@ class AdminController extends Controller {
         try {
             $this->assignmentModel->assign($brokerId, $propertyId);
             $this->auditModel->log(Auth::user()['user_id'], 'ASSIGN_BROKER', 'property', $propertyId, "Assigned broker ID {$brokerId}");
-            $_SESSION['success'] = 'Broker assigned successfully.';
+            $_SESSION['success'] = "Broker #{$brokerId} assigned to property #{$propertyId} successfully.";
         } catch (Exception $e) {
             $_SESSION['error'] = 'Failed to assign broker: ' . $e->getMessage();
         }
@@ -101,6 +105,7 @@ class AdminController extends Controller {
 
         $this->complaintModel->resolve($complaintId, Auth::user()['user_id'], $status);
         $this->auditModel->log(Auth::user()['user_id'], 'RESOLVE_COMPLAINT', 'complaint', $complaintId, "Status updated to {$status}");
+        $_SESSION['success'] = "Complaint #{$complaintId} marked as {$status}.";
 
         $this->redirect('/admin/users');
     }

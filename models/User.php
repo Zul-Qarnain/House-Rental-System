@@ -25,6 +25,12 @@ class User extends Model {
         return $stmt->fetchAll();
     }
 
+    public function getByRole(string $role): array {
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE role = ? AND is_active = 1 ORDER BY name ASC");
+        $stmt->execute([$role]);
+        return $stmt->fetchAll();
+    }
+
     public function updateStatus(int $userId, bool $isActive): bool {
         $stmt = $this->db->prepare("UPDATE users SET is_active = ? WHERE user_id = ?");
         return $stmt->execute([(int)$isActive, $userId]);
