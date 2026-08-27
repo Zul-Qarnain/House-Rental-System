@@ -1,5 +1,10 @@
 <?php
-// Single Entry Point / Front Controller for InfinityFree htdocs / Local Web Root
+// Enable Error Display for Debugging on InfinityFree
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// Single Entry Point / Front Controller
 spl_autoload_register(function ($class) {
     $paths = [
         __DIR__ . '/core/' . $class . '.php',

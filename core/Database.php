@@ -4,7 +4,11 @@ class Database {
 
     public static function getInstance(): PDO {
         if (self::$instance === null) {
-            $config = require __DIR__ . '/../config/config.php';
+            $configFile = __DIR__ . '/../config/config.php';
+            if (!file_exists($configFile)) {
+                $configFile = __DIR__ . '/config/config.php';
+            }
+            $config = require $configFile;
             $db = $config['db'];
 
             $options = [
@@ -13,7 +17,7 @@ class Database {
                 PDO::ATTR_EMULATE_PREPARES => false,
             ];
 
-            if (!empty($db['ssl_ca'])) {
+            if (!empty($db['ssl_ca']) && file_exists($db['ssl_ca'])) {
                 $options[PDO::MYSQL_ATTR_SSL_CA] = $db['ssl_ca'];
                 $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = true;
             }

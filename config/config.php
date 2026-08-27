@@ -26,6 +26,6 @@ return [
         'name' => $env['DB_NAME'] ?? getenv('DB_NAME') ?: 'defaultdb',
         'user' => $env['DB_USER'] ?? getenv('DB_USER') ?: 'root',
         'pass' => $env['DB_PASS'] ?? getenv('DB_PASS') ?: '',
-        'ssl_ca' => $env['DB_SSL_CA'] ?? getenv('DB_SSL_CA') ?: null,
+        'ssl_ca' => (!empty($env['DB_SSL_CA']) && file_exists($env['DB_SSL_CA'])) ? $env['DB_SSL_CA'] : null,
     ],
 ];
