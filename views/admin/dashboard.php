@@ -7,7 +7,7 @@
                 <span class="material-symbols-outlined text-[28px] text-on-tertiary-container">admin_panel_settings</span>
                 Admin Control Center
             </h1>
-            <p class="text-sm text-on-surface-variant mt-1">Manage platform users, property verification, broker assignments, resolution desk & audit logs.</p>
+            <p class="text-sm text-on-surface-variant mt-1">Manage platform users, property verification, resolution desk & audit logs.</p>
         </div>
     </div>
 
@@ -85,11 +85,11 @@
         </div>
     </div>
 
-    <!-- Property Verification & Broker Assignment Desk -->
+    <!-- Property Verification Desk -->
     <div class="mb-10">
         <h2 class="text-lg font-bold text-on-surface mb-4 flex items-center gap-2">
-            <span class="material-symbols-outlined text-[20px]">real_estate_agent</span>
-            Property Approvals & Broker Assignment
+            <span class="material-symbols-outlined text-[20px]">verified</span>
+            Property Verification & Approvals
         </h2>
         <div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm">
             <table class="w-full text-left text-sm">
@@ -99,7 +99,7 @@
                         <th class="p-4 font-semibold">Title & Owner</th>
                         <th class="p-4 font-semibold">City & Rent</th>
                         <th class="p-4 font-semibold">Approval Status</th>
-                        <th class="p-4 font-semibold text-right">Actions</th>
+                        <th class="p-4 font-semibold text-right">Action</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-outline-variant/50">
@@ -120,30 +120,17 @@
                                 </span>
                             </td>
                             <td class="p-4 text-right">
-                                <div class="flex items-center justify-end gap-2 flex-wrap">
-                                    <?php if (!$p['is_approved']): ?>
-                                        <form action="/admin/properties/approve" method="POST" class="inline">
-                                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
-                                            <input type="hidden" name="property_id" value="<?= $p['property_id'] ?>">
-                                            <input type="hidden" name="is_approved" value="1">
-                                            <input type="hidden" name="is_verified" value="1">
-                                            <button type="submit" class="bg-tertiary-container text-on-tertiary-container text-xs px-3 py-1.5 rounded-lg font-semibold hover:bg-tertiary-fixed transition-colors">Approve</button>
-                                        </form>
-                                    <?php endif; ?>
-
-                                    <!-- Broker Assignment Dropdown Form -->
-                                    <form action="/admin/properties/assign-broker" method="POST" class="inline-flex gap-1 items-center">
+                                <?php if (!$p['is_approved']): ?>
+                                    <form action="/admin/properties/approve" method="POST" class="inline">
                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
                                         <input type="hidden" name="property_id" value="<?= $p['property_id'] ?>">
-                                        <select name="broker_id" required class="text-xs px-2 py-1.5 border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface">
-                                            <option value="">-- Select Broker --</option>
-                                            <?php foreach ($brokers as $b): ?>
-                                                <option value="<?= $b['user_id'] ?>"><?= htmlspecialchars($b['name']) ?> (#<?= $b['user_id'] ?>)</option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                        <button type="submit" class="bg-primary-container text-on-primary text-xs px-3 py-1.5 rounded-lg font-semibold hover:bg-on-primary-fixed transition-colors">Assign</button>
+                                        <input type="hidden" name="is_approved" value="1">
+                                        <input type="hidden" name="is_verified" value="1">
+                                        <button type="submit" class="bg-tertiary-container text-on-tertiary-container text-xs px-3 py-1.5 rounded-lg font-semibold hover:bg-tertiary-fixed transition-colors">Approve</button>
                                     </form>
-                                </div>
+                                <?php else: ?>
+                                    <span class="text-xs text-outline italic">Verified</span>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
