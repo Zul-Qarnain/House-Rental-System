@@ -17,6 +17,63 @@ This project was built collaboratively with dedicated module responsibilities:
 
 ---
 
+### 💻 Running Locally on XAMPP / Localhost (For Faculty & Team Evaluation)
+
+Follow these **5 simple steps** to set up and run the project locally using XAMPP:
+
+#### 1️⃣ Copy Project into XAMPP `htdocs`
+Place the repository folder (`House-Rental-System`) inside your XAMPP web root directory:
+- **Windows:** `C:\xampp\htdocs\House-Rental-System`
+- **Linux:** `/opt/lampp/htdocs/House-Rental-System`
+- **macOS:** `/Applications/XAMPP/htdocs/House-Rental-System`
+
+#### 2️⃣ Start Apache & MySQL
+Open **XAMPP Control Panel** and click **Start** for both **Apache** and **MySQL**.
+
+#### 3️⃣ Import Database in phpMyAdmin
+1. Open your browser and go to: `http://localhost/phpmyadmin`
+2. Click **New** $\rightarrow$ Create a database named **`defaultdb`** (Collation: `utf8mb4_general_ci`).
+3. Select `defaultdb` $\rightarrow$ Click **Import**.
+4. Import `database/schema.sql` (and `database/seed.sql` to populate demo accounts & listings).
+
+#### 4️⃣ Configure Local Credentials
+Create a file named `config/config.local.php` inside the project folder:
+```php
+<?php
+return [
+    'DB_HOST' => '127.0.0.1',
+    'DB_PORT' => 3306,
+    'DB_NAME' => 'defaultdb',
+    'DB_USER' => 'root',  // Default XAMPP username
+    'DB_PASS' => '',      // Default XAMPP password is empty
+    'DB_SSL_CA' => null,
+];
+```
+
+#### 5️⃣ Open Website in Browser
+- **Option A (PHP Built-in Server - Recommended):**  
+  Open terminal inside `House-Rental-System` and run:
+  ```bash
+  php -S 127.0.0.1:8000 -t public public/index.php
+  ```
+  Visit: 👉 **`http://127.0.0.1:8000`**
+
+- **Option B (Direct XAMPP URL):**  
+  Visit: 👉 **`http://localhost/House-Rental-System/`**
+
+---
+
+### 🔑 Demo Accounts & Passwords (Password for ALL: `password123`)
+
+| Role | Email | Password |
+| :--- | :--- | :--- |
+| **System Admin** | `admin@proptech.com` | `password123` |
+| **Homeowner** | `owner@proptech.com` | `password123` |
+| **Tenant** | `tenant@proptech.com` | `password123` |
+| **Broker** | `broker@proptech.com` | `password123` |
+
+---
+
 ### 🔑 User Roles & Feature Breakdown ("Who Has Which Features")
 
 ```mermaid
@@ -90,15 +147,9 @@ Automated testing and deployment configured in [.github/workflows/ci-cd.yml](fil
 
 ---
 
-### 🧪 Running Tests & Local Server
+### 🧪 Running Automated Unit Tests
 
-#### Run Local Development Server:
-```bash
-php -S 127.0.0.1:8000 -t public public/index.php
-```
-*Access locally at `http://127.0.0.1:8000/`.*
-
-#### Run Automated Test Suite (9 Test Suites):
+Run the test suite (9 Test Suites):
 ```bash
 php tests/run_tests.php
 ```
