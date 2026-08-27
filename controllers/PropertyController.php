@@ -48,7 +48,7 @@ class PropertyController extends Controller {
     }
 
     public function showCreateForm(): void {
-        Auth::requireRole('owner', 'broker');
+        Auth::requireRole('owner');
         $this->render('owner/property_form', [
             'csrf_token' => Auth::csrfToken(),
             'property' => null
@@ -56,7 +56,7 @@ class PropertyController extends Controller {
     }
 
     public function processCreate(): void {
-        Auth::requireRole('owner', 'broker');
+        Auth::requireRole('owner');
         if (!Auth::verifyCsrf($_POST['csrf_token'] ?? '')) {
             http_response_code(400);
             echo "Invalid CSRF token.";
@@ -64,16 +64,9 @@ class PropertyController extends Controller {
         }
 
         $user = Auth::user();
-        $ownerId = $user['role'] === 'owner' ? $user['user_id'] : (int)($_POST['owner_id'] ?? 0);
-
-        if ($user['role'] === 'broker' && !$ownerId) {
-            http_response_code(400);
-            echo "Broker must specify property owner_id.";
-            return;
-        }
 
         $data = [
-            'owner_id' => $ownerId,
+            'owner_id' => $user['user_id'],
             'title' => trim($_POST['title'] ?? ''),
             'description' => trim($_POST['description'] ?? ''),
             'address_line' => trim($_POST['address_line'] ?? ''),
@@ -91,7 +84,8 @@ class PropertyController extends Controller {
             $this->imageModel->addImage($propertyId, trim($_POST['cover_image_url']), true);
         }
 
-        $this->redirect($user['role'] === 'owner' ? '/owner/dashboard' : '/broker/dashboard');
+        $_SESSION['success'] = "Property '{$data['title']}' created successfully!";
+        $this->redirect('/owner/dashboard');
     }
 
     public function toggleAvailability(): void {
