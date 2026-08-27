@@ -57,19 +57,6 @@ Open `http://127.0.0.1:8000` in your browser. Alternatively, access via `http://
 
 ---
 
-## Demo Accounts & Test Passwords
-
-All demo accounts use the password: `password123`
-
-| Role | Email | Password |
-| :--- | :--- | :--- |
-| **System Admin** | `admin@proptech.com` | `password123` |
-| **Homeowner** | `owner@proptech.com` | `password123` |
-| **Tenant** | `tenant@proptech.com` | `password123` |
-| **Broker** | `broker@proptech.com` | `password123` |
-
----
-
 ## User Roles & System Features
 
 ### 1. System Admin (`admin@proptech.com`)
