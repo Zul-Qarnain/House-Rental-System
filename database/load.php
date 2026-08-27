@@ -18,7 +18,14 @@ function runSqlFile(PDO $pdo, string $filepath) {
         if (str_ends_with($trim, $delimiter)) {
             $query = trim(substr(trim($buffer), 0, -strlen($delimiter)));
             if (!empty($query)) {
-                $pdo->exec($query);
+                try {
+                    $pdo->exec($query);
+                } catch (Exception $e) {
+                    // Gracefully catch TRIGGER permission restrictions on InfinityFree hosting
+                    if (strpos($e->getMessage(), 'TRIGGER') === false && strpos($e->getMessage(), '1142') === false) {
+                        throw $e;
+                    }
+                }
             }
             $buffer = "";
         }
@@ -29,7 +36,7 @@ $config = require __DIR__ . '/../config/config.php';
 $db = $config['db'];
 $dsn = "mysql:host={$db['host']};port={$db['port']};dbname={$db['name']};charset=utf8mb4";
 $options = [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
-if (!empty($db['ssl_ca'])) {
+if (!empty($db['ssl_ca']) && file_exists($db['ssl_ca'])) {
     $options[PDO::MYSQL_ATTR_SSL_CA] = $db['ssl_ca'];
     $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = true;
 }
