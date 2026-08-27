@@ -76,12 +76,13 @@ jobs:
           ];
           EOF
 
-      - name: FTP Deploy to InfinityFree
+      - name: FTP Deploy to InfinityFree htdocs
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.INFINITYFREE_FTP_HOST }}
           username: ${{ secrets.INFINITYFREE_FTP_USER }}
           password: ${{ secrets.INFINITYFREE_FTP_PASS }}
+          server-dir: htdocs/
           exclude: |
             **/.git*
             **/.git*/**
