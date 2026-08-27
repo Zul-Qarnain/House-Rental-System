@@ -7,7 +7,7 @@
                 <span class="material-symbols-outlined text-[28px] text-on-tertiary-container">admin_panel_settings</span>
                 Admin Control Center
             </h1>
-            <p class="text-sm text-on-surface-variant mt-1">Manage platform users, property verification, resolution desk & audit logs.</p>
+            <p class="text-sm text-on-surface-variant mt-1">Manage user account statuses, resolution desk & audit logs.</p>
         </div>
     </div>
 
@@ -77,60 +77,6 @@
                                         <?= $u['is_active'] ? 'Deactivate' : 'Activate' ?>
                                     </button>
                                 </form>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Property Verification Desk -->
-    <div class="mb-10">
-        <h2 class="text-lg font-bold text-on-surface mb-4 flex items-center gap-2">
-            <span class="material-symbols-outlined text-[20px]">verified</span>
-            Property Verification & Approvals
-        </h2>
-        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm">
-            <table class="w-full text-left text-sm">
-                <thead class="bg-surface-container-low text-xs uppercase text-on-surface-variant border-b border-outline-variant">
-                    <tr>
-                        <th class="p-4 font-semibold">ID</th>
-                        <th class="p-4 font-semibold">Title & Owner</th>
-                        <th class="p-4 font-semibold">City & Rent</th>
-                        <th class="p-4 font-semibold">Approval Status</th>
-                        <th class="p-4 font-semibold text-right">Action</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-outline-variant/50">
-                    <?php foreach ($properties as $p): ?>
-                        <tr class="hover:bg-surface-container-low/50 transition-colors">
-                            <td class="p-4 font-mono text-xs text-on-surface">#<?= $p['property_id'] ?></td>
-                            <td class="p-4 text-on-surface">
-                                <div class="font-semibold"><?= htmlspecialchars($p['title']) ?></div>
-                                <div class="text-xs text-on-surface-variant">Owner: <?= htmlspecialchars($p['owner_name']) ?></div>
-                            </td>
-                            <td class="p-4 text-on-surface-variant text-xs">
-                                <div><?= htmlspecialchars($p['city']) ?></div>
-                                <div class="font-bold text-on-surface">$<?= number_format($p['price_per_month'], 2) ?>/mo</div>
-                            </td>
-                            <td class="p-4">
-                                <span class="px-2.5 py-1 rounded-full text-xs font-semibold uppercase <?= $p['is_approved'] ? 'bg-tertiary-container text-on-tertiary-container' : 'bg-secondary-container text-on-secondary-container' ?>">
-                                    <?= $p['is_approved'] ? 'Approved' : 'Pending' ?>
-                                </span>
-                            </td>
-                            <td class="p-4 text-right">
-                                <?php if (!$p['is_approved']): ?>
-                                    <form action="/admin/properties/approve" method="POST" class="inline">
-                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
-                                        <input type="hidden" name="property_id" value="<?= $p['property_id'] ?>">
-                                        <input type="hidden" name="is_approved" value="1">
-                                        <input type="hidden" name="is_verified" value="1">
-                                        <button type="submit" class="bg-tertiary-container text-on-tertiary-container text-xs px-3 py-1.5 rounded-lg font-semibold hover:bg-tertiary-fixed transition-colors">Approve</button>
-                                    </form>
-                                <?php else: ?>
-                                    <span class="text-xs text-outline italic">Verified</span>
-                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>

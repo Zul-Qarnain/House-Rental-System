@@ -1,7 +1,7 @@
 <?php
 class Property extends Model {
     public function create(array $data): int {
-        $stmt = $this->db->prepare("INSERT INTO properties (owner_id, title, description, address_line, city, price_per_month, bedrooms, bathrooms, area_sqft, availability_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $this->db->prepare("INSERT INTO properties (owner_id, title, description, address_line, city, price_per_month, bedrooms, bathrooms, area_sqft, availability_status, is_approved, is_verified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 1)");
         $stmt->execute([
             $data['owner_id'],
             $data['title'],

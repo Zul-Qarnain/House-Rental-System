@@ -9,7 +9,7 @@ An Online Rental Property Management Platform built with PHP (MVC Architecture),
 | Contributor | GitHub Profile | Assigned Module & Deliverables |
 | :--- | :--- | :--- |
 | **Zulqarnain** (Lead) | [@Zul-Qarnain](https://github.com/Zul-Qarnain) | Core MVC Architecture, Database Schema, Auth System, Tenant Portal & Public Marketplace |
-| **Naimul (Tashin)** | [@Tashin90](https://github.com/Tashin90) | Admin Control Desk, Property Verification, Complaint Resolution Desk & Audit Logs (`admin_actions`) |
+| **Naimul (Tashin)** | [@Tashin90](https://github.com/Tashin90) | Admin Control Desk, Account Status Management, Complaint Resolution Desk & Audit Logs (`admin_actions`) |
 | **Rahul** | [@Rahul53662](https://github.com/Rahul53662) | Homeowner Portfolio, Listing Wizard, Rental Request Inbox & Review Reply System |
 | **Labib** | [@Md-Mahir-Labib](https://github.com/Md-Mahir-Labib) | Broker Portal, Assigned Property Ledger, Walkthrough Visit Execution & Commission Payout Ledger |
 
@@ -61,12 +61,11 @@ Open `http://127.0.0.1:8000` in your browser. Alternatively, access via `http://
 
 ### 1. System Admin (`admin@proptech.com`)
 - **User Management:** Activate or deactivate user accounts.
-- **Property Approvals:** Review and approve submitted property listings.
 - **Resolution Desk:** Manage and resolve filed complaints.
 - **Audit Logs:** Track system administrator actions (`admin_actions`).
 
 ### 2. Homeowner (`owner@proptech.com`)
-- **Property Portfolio:** Add, edit, and manage property listings (rent price, city, photos).
+- **Property Portfolio:** Create, edit, and publish property listings (instant live listing activation).
 - **Broker Management:** Assign and change brokers assigned to property listings or walkthrough visits.
 - **Listing Status:** Change property status (`available`, `pending`, `rented`).
 - **Rental Applications:** Approve or reject tenant rental requests.
