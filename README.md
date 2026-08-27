@@ -30,7 +30,7 @@ Open the XAMPP Control Panel and start **Apache** and **MySQL**.
 
 ### 3. Setup Database
 1. Open phpMyAdmin at `http://localhost/phpmyadmin`
-2. Create a new database named `defaultdb` (Collation: `utf8mb4_general_ci`).
+2. Create a new database named `defaultdb`.
 3. Select `defaultdb` and go to the **Import** tab.
 4. Import `database/schema.sql` first, followed by `database/seed.sql` to load initial seed data.
 
