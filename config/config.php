@@ -2,6 +2,23 @@
 $local = __DIR__ . '/config.local.php';
 $env   = file_exists($local) ? require $local : [];
 
+$dotEnvPath = __DIR__ . '/../.env';
+if (file_exists($dotEnvPath)) {
+    $lines = file($dotEnvPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if (empty($line) || strpos($line, '#') === 0) continue;
+        if (strpos($line, '=') !== false) {
+            list($key, $val) = explode('=', $line, 2);
+            $key = trim($key);
+            $val = trim($val, " \t\n\r\0\x0B\"'");
+            if (!isset($env[$key])) {
+                $env[$key] = $val;
+            }
+        }
+    }
+}
+
 return [
     'db' => [
         'host' => $env['DB_HOST'] ?? getenv('DB_HOST') ?: '127.0.0.1',
