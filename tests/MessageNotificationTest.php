@@ -19,7 +19,7 @@ class MessageNotificationTest {
         // 2. Create notification for recipient
         $notifId = $notificationModel->create(
             $receiver['user_id'],
-            'message',
+            'new_message',
             "New message from {$sender['name']}: \"{$msgContent}\"",
             'message',
             $msgId
@@ -29,6 +29,6 @@ class MessageNotificationTest {
         // 3. Verify notification received
         $notifications = $notificationModel->findByUser($receiver['user_id']);
         assert_true(!empty($notifications), "Receiver should have notifications");
-        assert_equal('message', $notifications[0]['type'], "Notification type should be message");
+        assert_equal('new_message', $notifications[0]['type'], "Notification type should be new_message");
     }
 }

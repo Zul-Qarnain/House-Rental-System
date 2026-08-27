@@ -54,7 +54,7 @@ class MessageController extends Controller {
             $snippet = mb_strimwidth($content, 0, 50, "...");
             $this->notificationModel->create(
                 $receiverId,
-                'message',
+                'new_message',
                 "New message from {$sender['name']}: \"{$snippet}\"",
                 'message',
                 $messageId
