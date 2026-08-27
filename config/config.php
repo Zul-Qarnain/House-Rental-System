@@ -21,10 +21,10 @@ if (file_exists($dotEnvPath)) {
 
 return [
     'db' => [
-        'host' => $env['DB_HOST'] ?? getenv('DB_HOST') ?: '127.0.0.1',
+        'host' => $env['DB_HOST'] ?? getenv('DB_HOST') ?: 'sql107.infinityfree.com',
         'port' => $env['DB_PORT'] ?? getenv('DB_PORT') ?: 3306,
-        'name' => $env['DB_NAME'] ?? getenv('DB_NAME') ?: 'defaultdb',
-        'user' => $env['DB_USER'] ?? getenv('DB_USER') ?: 'root',
+        'name' => $env['DB_NAME'] ?? getenv('DB_NAME') ?: 'if0_42656713_mydata',
+        'user' => $env['DB_USER'] ?? getenv('DB_USER') ?: 'if0_42656713',
         'pass' => $env['DB_PASS'] ?? getenv('DB_PASS') ?: '',
         'ssl_ca' => (!empty($env['DB_SSL_CA']) && file_exists($env['DB_SSL_CA'])) ? $env['DB_SSL_CA'] : null,
     ],
