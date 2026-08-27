@@ -1,0 +1,92 @@
+name: CI/CD Pipeline - Test & Deploy
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Run Test Suite
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: defaultdb
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: pdo, pdo_mysql
+
+      - name: Configure Ephemeral Test Database
+        run: |
+          cat << 'EOF' > config/config.local.php
+          <?php
+          return [
+              'DB_HOST' => '127.0.0.1',
+              'DB_PORT' => 3306,
+              'DB_NAME' => 'defaultdb',
+              'DB_USER' => 'root',
+              'DB_PASS' => 'root',
+              'DB_SSL_CA' => null,
+          ];
+          EOF
+
+      - name: Load Schema and Seed Data into MySQL Container
+        run: |
+          php database/load.php
+
+      - name: Run Test Runner
+        run: |
+          php tests/run_tests.php
+
+  deploy:
+    name: Deploy to InfinityFree Hosting
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Generate Production Config
+        run: |
+          cat << 'EOF' > config/config.local.php
+          <?php
+          return [
+              'DB_HOST' => '${{ secrets.INFINITYFREE_DB_HOST }}',
+              'DB_PORT' => 3306,
+              'DB_NAME' => '${{ secrets.INFINITYFREE_DB_NAME }}',
+              'DB_USER' => '${{ secrets.INFINITYFREE_DB_USER }}',
+              'DB_PASS' => '${{ secrets.INFINITYFREE_DB_PASS }}',
+          ];
+          EOF
+
+      - name: FTP Deploy to InfinityFree
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.INFINITYFREE_FTP_HOST }}
+          username: ${{ secrets.INFINITYFREE_FTP_USER }}
+          password: ${{ secrets.INFINITYFREE_FTP_PASS }}
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/tests/**
+            **/docs/**
+            **/config/config.local.php.example
+            **/database/seed.sql
+            **/database/load.php

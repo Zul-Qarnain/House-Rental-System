@@ -1,0 +1,5 @@
+config/config.local.php
+aiven-ca.pem
+config/aiven-ca.pem
+*.log
+.DS_Store
