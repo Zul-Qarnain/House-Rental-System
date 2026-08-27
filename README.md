@@ -4,56 +4,101 @@ A high-trust, production-ready **Online Rental Property Management Platform** bu
 
 ---
 
-### 👥 Team Members & Contribution Breakdown
+### 👥 Team Members & Contribution Matrix
 
-This project was built collaboratively by our team with dedicated module responsibilities:
+This project was built collaboratively with dedicated module responsibilities:
 
-| Contributor | GitHub Username | Assigned Module & Deliverables |
+| Contributor | GitHub Profile | Assigned Module & Deliverables |
 | :--- | :--- | :--- |
-| **Zulqarnain** (Project Lead) | [@Zul-Qarnain](https://github.com/Zul-Qarnain) | Core MVC Architecture, Database Schema, Auth System, Tenant Portal & Public Marketplace |
-| **Naimul (Tashin)** | [@Tashin90](https://github.com/Tashin90) | Admin Control Desk, Property Approvals, Complaint Resolution Desk & Audit Trail (`admin_actions`) |
-| **Rahul** | [@Rahul53662](https://github.com/Rahul53662) | Property Owner Portfolio, Listing Form, Rental Request Inbox & Review Reply System |
-| **Labib** | [@Md-Mahir-Labib](https://github.com/Md-Mahir-Labib) | Broker Suite, Property Visit Walkthrough Scheduler, Commission Ledger & Direct Messaging |
+| **Zulqarnain** (Lead) | [@Zul-Qarnain](https://github.com/Zul-Qarnain) | Core MVC Architecture, Database Schema, Auth System, Tenant Portal & Public Marketplace |
+| **Naimul (Tashin)** | [@Tashin90](https://github.com/Tashin90) | Admin Control Desk, Property Verification, Complaint Resolution Desk & Audit Trail (`admin_actions`) |
+| **Rahul** | [@Rahul53662](https://github.com/Rahul53662) | Homeowner Portfolio, Listing Wizard, Rental Request Inbox & Review Reply System |
+| **Labib** | [@Md-Mahir-Labib](https://github.com/Md-Mahir-Labib) | Broker Portal, Assigned Property Ledger, Walkthrough Visit Execution & Commission Payout Ledger |
 
 ---
 
-### 🚀 Key Features by Module
+### 🔑 User Roles & Feature Breakdown ("Who Has Which Features")
 
-#### 1. Public Marketplace & Tenant Portal
-- Filterable property catalog (city, price range, bedrooms, availability status).
-- Property detail page with verified badges, specs, image galleries, and reviews.
-- Rental request submission & application tracking desk.
-- Verified tenant review submission.
+```mermaid
+flowchart TD
+    Tenant["👤 Tenant (User)"] -->|1. Search Marketplace| Marketplace["Public Listings"]
+    Tenant -->|2. Request Walkthrough| VisitRequest["Walkthrough Visit Request"]
+    Tenant -->|3. Submit Application| RentalReq["Rental Application"]
+    
+    Owner["🏡 Homeowner"] -->|1. List Property| Marketplace
+    Owner -->|2. Assign Broker to Property/Visit| Broker["💼 Real Estate Broker"]
+    Owner -->|3. Approve Application| RentalReq
+    
+    Broker -->|Conducts Visit| VisitRequest
+    Broker -->|Earns Payout| Commission["Commission Ledger"]
+    
+    Admin["🛡️ System Admin"] -->|Verifies Listings & Accounts| Marketplace
+    Admin -->|Resolves Disputes| Resolution["Resolution Desk"]
+```
 
-#### 2. Property Owner Dashboard
-- Add/edit listings with cover image management.
-- Availability status toggling (`available`, `pending`, `rented`).
-- Incoming rental request inbox with 1-click Approve/Reject actions.
-- Review reply system linked directly to owner property reviews.
+#### 🛡️ 1. System Admin (`admin@proptech.com`)
+- **User Account Management:** Activate or deactivate platform user accounts (`users.is_active`).
+- **Property Approvals:** Review and approve/verify newly submitted listings before public launch.
+- **Resolution Desk:** Manage and resolve user or property complaints.
+- **Audit Logging:** View persistent administrative security logs (`admin_actions`).
 
-#### 3. Real Estate Broker Suite
-- Active client property assignments ledger.
-- Walkthrough visit scheduling with status updates (`scheduled`, `completed`).
-- Automated commission tracking ledger (calculated on deal approvals).
+#### 🏡 2. Homeowner (`owner@proptech.com`)
+- **Listing Portfolio:** Create and edit property listings (rent price, city, cover photos, specs).
+- **Broker Management:** Select and assign licensed real estate brokers directly to properties and visit requests.
+- **Status Toggling:** Update property availability (`available`, `pending`, `rented`).
+- **Application Inbox:** 1-click Approve/Reject actions on incoming tenant rental requests.
+- **Review Replies:** Post responses to tenant ratings and reviews.
 
-#### 4. Admin Control Desk & Audit Trail
-- Platform user activation/deactivation and role controls.
-- Property verification and approval workflow.
-- Broker property assignment modal.
-- Complaint resolution desk (enforcing XOR constraint on user vs property complaints).
-- Persistent audit log (`admin_actions`).
+#### 👤 3. Tenant / General User (`tenant@proptech.com`)
+- **Marketplace Search:** Filter property catalog by city, price range, and bedroom count.
+- **Walkthrough Visit Requests:** Select preferred date and time to request a property walkthrough visit.
+- **Rental Application Checkout:** Submit formal rental applications with move-in dates and messages.
+- **Tenant Dashboard:** Manage active lease agreements, requested visits, and rental request status.
+- **Ratings & Reviews:** Rate and review rented properties.
 
-#### 5. Real-Time Security & System Design
-- Prepared statements via PDO on all database queries.
-- CSRF token validation on all POST form submissions.
-- Role-based route authorization guards (`Auth::requireRole()`).
-- Responsive Slate/Emerald modern UI matching design system specs.
+#### 💼 4. Real Estate Broker (`broker@proptech.com`)
+- **Assigned Client Ledger:** View client property listings assigned to them by Homeowners.
+- **Walkthrough Visit Execution:** View walkthrough visits assigned by Homeowners and mark them as `completed`.
+- **Commission Ledger:** Track automatically calculated commission payouts (50% of 1st month rent) on closed deals.
 
 ---
 
-### ⚙️ CI/CD & Automated InfinityFree Deployment
+### ⚙️ GitHub to Website CI/CD Deployment Pipeline Workflow
 
-Automated CI/CD pipeline configured in `.github/workflows/ci-cd.yml`:
-1. Runs automated unit tests on an ephemeral MySQL 8.0 container.
-2. Injects production database credentials from GitHub Secrets.
-3. Automatically deploys clean production artifacts to InfinityFree hosting via FTP on every push to `main`.
+Automated testing and deployment configured in [.github/workflows/ci-cd.yml](file:///.github/workflows/ci-cd.yml):
+
+```
+┌─────────────────────────┐     ┌──────────────────────────┐     ┌─────────────────────────┐
+│  Git Push to main       │ ──> │ Ephemeral MySQL 8.0 Test │ ──> │ Inject Production Config│
+└─────────────────────────┘     └──────────────────────────┘     └─────────────────────────┘
+                                                                              │
+                                                                              ▼
+┌─────────────────────────┐                                      ┌─────────────────────────┐
+│ Live Website Active     │ <─────────────────────────────────── │ FTP Deploy into htdocs/ │
+└─────────────────────────┘                                      └─────────────────────────┘
+```
+
+#### Pipeline Steps:
+1. **Automated Testing Stage:**
+   - Spins up an ephemeral **MySQL 8.0** service container on GitHub Actions runners (`ubuntu-latest`).
+   - Loads `database/schema.sql` and `database/seed.sql` into the container.
+   - Runs **9 unit & integration test suites** via `php tests/run_tests.php`.
+2. **Secrets & Production Configuration Stage:**
+   - Injects encrypted GitHub Repository Secrets (`INFINITYFREE_DB_HOST`, `INFINITYFREE_DB_USER`, `INFINITYFREE_DB_PASS`, `INFINITYFREE_FTP_*`) into `config/config.local.php`.
+3. **Automated FTP Deployment:**
+   - Uses `SamKirkland/FTP-Deploy-Action@v4.3.5` to deploy clean production files directly into InfinityFree's **`htdocs/`** web root directory.
+
+---
+
+### 🧪 Running Tests & Local Server
+
+#### Run Local Development Server:
+```bash
+php -S 127.0.0.1:8000 -t public public/index.php
+```
+*Access locally at `http://127.0.0.1:8000/`.*
+
+#### Run Automated Test Suite (9 Test Suites):
+```bash
+php tests/run_tests.php
+```
