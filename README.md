@@ -1,43 +1,41 @@
-# 🏡 House Rental Management System (PropTech OS)
+# House Rental Management System
 
-A high-trust, production-ready **Online Rental Property Management Platform** built with raw **PHP 8.x**, **MVC Architecture**, **MySQL 8.0**, and **Tailwind CSS**.
+An Online Rental Property Management Platform built with PHP (MVC Architecture), MySQL, and Tailwind CSS.
 
 ---
 
-### 👥 Team Members & Contribution Matrix
-
-This project was built collaboratively with dedicated module responsibilities:
+## Team Members & Contribution Breakdown
 
 | Contributor | GitHub Profile | Assigned Module & Deliverables |
 | :--- | :--- | :--- |
 | **Zulqarnain** (Lead) | [@Zul-Qarnain](https://github.com/Zul-Qarnain) | Core MVC Architecture, Database Schema, Auth System, Tenant Portal & Public Marketplace |
-| **Naimul (Tashin)** | [@Tashin90](https://github.com/Tashin90) | Admin Control Desk, Property Verification, Complaint Resolution Desk & Audit Trail (`admin_actions`) |
+| **Naimul (Tashin)** | [@Tashin90](https://github.com/Tashin90) | Admin Control Desk, Property Verification, Complaint Resolution Desk & Audit Logs (`admin_actions`) |
 | **Rahul** | [@Rahul53662](https://github.com/Rahul53662) | Homeowner Portfolio, Listing Wizard, Rental Request Inbox & Review Reply System |
 | **Labib** | [@Md-Mahir-Labib](https://github.com/Md-Mahir-Labib) | Broker Portal, Assigned Property Ledger, Walkthrough Visit Execution & Commission Payout Ledger |
 
 ---
 
-### 💻 Running Locally on XAMPP / Localhost (For Faculty & Team Evaluation)
+## Local Setup (XAMPP / Localhost)
 
-Follow these **5 simple steps** to set up and run the project locally using XAMPP:
+Follow these steps to run the application locally using XAMPP:
 
-#### 1️⃣ Copy Project into XAMPP `htdocs`
-Place the repository folder (`House-Rental-System`) inside your XAMPP web root directory:
+### 1. Copy Project Files
+Copy the project folder into your XAMPP `htdocs` directory:
 - **Windows:** `C:\xampp\htdocs\House-Rental-System`
 - **Linux:** `/opt/lampp/htdocs/House-Rental-System`
 - **macOS:** `/Applications/XAMPP/htdocs/House-Rental-System`
 
-#### 2️⃣ Start Apache & MySQL
-Open **XAMPP Control Panel** and click **Start** for both **Apache** and **MySQL**.
+### 2. Start Services
+Open the XAMPP Control Panel and start **Apache** and **MySQL**.
 
-#### 3️⃣ Import Database in phpMyAdmin
-1. Open your browser and go to: `http://localhost/phpmyadmin`
-2. Click **New** $\rightarrow$ Create a database named **`defaultdb`** (Collation: `utf8mb4_general_ci`).
-3. Select `defaultdb` $\rightarrow$ Click **Import**.
-4. Import `database/schema.sql` (and `database/seed.sql` to populate demo accounts & listings).
+### 3. Setup Database
+1. Open phpMyAdmin at `http://localhost/phpmyadmin`
+2. Create a new database named `defaultdb` (Collation: `utf8mb4_general_ci`).
+3. Select `defaultdb` and go to the **Import** tab.
+4. Import `database/schema.sql` first, followed by `database/seed.sql` to load initial seed data.
 
-#### 4️⃣ Configure Local Credentials
-Create a file named `config/config.local.php` inside the project folder:
+### 4. Configuration
+Create `config/config.local.php` in the root project folder:
 ```php
 <?php
 return [
@@ -50,20 +48,18 @@ return [
 ];
 ```
 
-#### 5️⃣ Open Website in Browser
-- **Option A (PHP Built-in Server - Recommended):**  
-  Open terminal inside `House-Rental-System` and run:
-  ```bash
-  php -S 127.0.0.1:8000 -t public public/index.php
-  ```
-  Visit: 👉 **`http://127.0.0.1:8000`**
-
-- **Option B (Direct XAMPP URL):**  
-  Visit: 👉 **`http://localhost/House-Rental-System/`**
+### 5. Access Application
+Run the built-in PHP development server inside the project root:
+```bash
+php -S 127.0.0.1:8000 -t public public/index.php
+```
+Open `http://127.0.0.1:8000` in your browser. Alternatively, access via `http://localhost/House-Rental-System/`.
 
 ---
 
-### 🔑 Demo Accounts & Passwords (Password for ALL: `password123`)
+## Demo Accounts & Test Passwords
+
+All demo accounts use the password: `password123`
 
 | Role | Email | Password |
 | :--- | :--- | :--- |
@@ -74,82 +70,52 @@ return [
 
 ---
 
-### 🔑 User Roles & Feature Breakdown ("Who Has Which Features")
+## User Roles & System Features
 
-```mermaid
-flowchart TD
-    Tenant["👤 Tenant (User)"] -->|1. Search Marketplace| Marketplace["Public Listings"]
-    Tenant -->|2. Request Walkthrough| VisitRequest["Walkthrough Visit Request"]
-    Tenant -->|3. Submit Application| RentalReq["Rental Application"]
-    
-    Owner["🏡 Homeowner"] -->|1. List Property| Marketplace
-    Owner -->|2. Assign Broker to Property/Visit| Broker["💼 Real Estate Broker"]
-    Owner -->|3. Approve Application| RentalReq
-    
-    Broker -->|Conducts Visit| VisitRequest
-    Broker -->|Earns Payout| Commission["Commission Ledger"]
-    
-    Admin["🛡️ System Admin"] -->|Verifies Listings & Accounts| Marketplace
-    Admin -->|Resolves Disputes| Resolution["Resolution Desk"]
-```
+### 1. System Admin (`admin@proptech.com`)
+- **User Management:** Activate or deactivate user accounts.
+- **Property Approvals:** Review and approve submitted property listings.
+- **Resolution Desk:** Manage and resolve filed complaints.
+- **Audit Logs:** Track system administrator actions (`admin_actions`).
 
-#### 🛡️ 1. System Admin (`admin@proptech.com`)
-- **User Account Management:** Activate or deactivate platform user accounts (`users.is_active`).
-- **Property Approvals:** Review and approve/verify newly submitted listings before public launch.
-- **Resolution Desk:** Manage and resolve user or property complaints.
-- **Audit Logging:** View persistent administrative security logs (`admin_actions`).
+### 2. Homeowner (`owner@proptech.com`)
+- **Property Portfolio:** Add, edit, and manage property listings (rent price, city, photos).
+- **Broker Management:** Assign and change brokers assigned to property listings or walkthrough visits.
+- **Listing Status:** Change property status (`available`, `pending`, `rented`).
+- **Rental Applications:** Approve or reject tenant rental requests.
+- **Reviews:** View tenant reviews and post replies.
 
-#### 🏡 2. Homeowner (`owner@proptech.com`)
-- **Listing Portfolio:** Create and edit property listings (rent price, city, cover photos, specs).
-- **Broker Management:** Select and assign licensed real estate brokers directly to properties and visit requests.
-- **Status Toggling:** Update property availability (`available`, `pending`, `rented`).
-- **Application Inbox:** 1-click Approve/Reject actions on incoming tenant rental requests.
-- **Review Replies:** Post responses to tenant ratings and reviews.
+### 3. Tenant / General User (`tenant@proptech.com`)
+- **Marketplace Search:** Search and filter listings by city, rent price, and bedrooms.
+- **Walkthrough Visits:** Schedule requested visit dates and times for properties.
+- **Rental Applications:** Submit rental requests with proposed move-in dates.
+- **Tenant Dashboard:** View active lease agreements, requested visits, and request history.
+- **Reviews:** Submit ratings and reviews for rented properties.
 
-#### 👤 3. Tenant / General User (`tenant@proptech.com`)
-- **Marketplace Search:** Filter property catalog by city, price range, and bedroom count.
-- **Walkthrough Visit Requests:** Select preferred date and time to request a property walkthrough visit.
-- **Rental Application Checkout:** Submit formal rental applications with move-in dates and messages.
-- **Tenant Dashboard:** Manage active lease agreements, requested visits, and rental request status.
-- **Ratings & Reviews:** Rate and review rented properties.
-
-#### 💼 4. Real Estate Broker (`broker@proptech.com`)
-- **Assigned Client Ledger:** View client property listings assigned to them by Homeowners.
-- **Walkthrough Visit Execution:** View walkthrough visits assigned by Homeowners and mark them as `completed`.
-- **Commission Ledger:** Track automatically calculated commission payouts (50% of 1st month rent) on closed deals.
+### 4. Real Estate Broker (`broker@proptech.com`)
+- **Assigned Portfolio:** View property listings assigned by homeowners.
+- **Walkthrough Visits:** View assigned walkthrough visit requests and update status (`completed`).
+- **Commission Ledger:** Track earned commission payouts calculated on approved deals.
 
 ---
 
-### ⚙️ GitHub to Website CI/CD Deployment Pipeline Workflow
+## Deployment & CI/CD Workflow
 
-Automated testing and deployment configured in [.github/workflows/ci-cd.yml](file:///.github/workflows/ci-cd.yml):
+Automated testing and deployment pipeline configured in `.github/workflows/ci-cd.yml`:
 
 ```
-┌─────────────────────────┐     ┌──────────────────────────┐     ┌─────────────────────────┐
-│  Git Push to main       │ ──> │ Ephemeral MySQL 8.0 Test │ ──> │ Inject Production Config│
-└─────────────────────────┘     └──────────────────────────┘     └─────────────────────────┘
-                                                                              │
-                                                                              ▼
-┌─────────────────────────┐                                      ┌─────────────────────────┐
-│ Live Website Active     │ <─────────────────────────────────── │ FTP Deploy into htdocs/ │
-└─────────────────────────┘                                      └─────────────────────────┘
+Git Push -> MySQL 8.0 Test Runner -> Inject Config -> FTP Deploy (htdocs/)
 ```
 
-#### Pipeline Steps:
-1. **Automated Testing Stage:**
-   - Spins up an ephemeral **MySQL 8.0** service container on GitHub Actions runners (`ubuntu-latest`).
-   - Loads `database/schema.sql` and `database/seed.sql` into the container.
-   - Runs **9 unit & integration test suites** via `php tests/run_tests.php`.
-2. **Secrets & Production Configuration Stage:**
-   - Injects encrypted GitHub Repository Secrets (`INFINITYFREE_DB_HOST`, `INFINITYFREE_DB_USER`, `INFINITYFREE_DB_PASS`, `INFINITYFREE_FTP_*`) into `config/config.local.php`.
-3. **Automated FTP Deployment:**
-   - Uses `SamKirkland/FTP-Deploy-Action@v4.3.5` to deploy clean production files directly into InfinityFree's **`htdocs/`** web root directory.
+1. **Automated Testing:** Spins up a MySQL 8.0 container on GitHub Actions and executes test suites (`php tests/run_tests.php`).
+2. **Configuration Injection:** Injects production database credentials from GitHub Repository Secrets into `config/config.local.php`.
+3. **Deployment:** Deploys code to the web hosting server (`htdocs/`) via FTP.
 
 ---
 
-### 🧪 Running Automated Unit Tests
+## Running Unit Tests
 
-Run the test suite (9 Test Suites):
+To run the custom test suite locally:
 ```bash
 php tests/run_tests.php
 ```
