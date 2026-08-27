@@ -89,5 +89,3 @@ jobs:
             **/tests/**
             **/docs/**
             **/config/config.local.php.example
-            **/database/seed.sql
-            **/database/load.php
