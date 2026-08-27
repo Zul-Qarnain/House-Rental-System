@@ -16,6 +16,19 @@ class PropertyController extends Controller {
 
         $properties = $this->propertyModel->search($city, $minPrice, $maxPrice, $bedrooms);
 
+        $user = Auth::user();
+        if ($user && $user['role'] === 'tenant') {
+            $requestModel = new RentalRequest();
+            $userRequests = $requestModel->findByTenant($user['user_id']);
+            $userAppMap = [];
+            foreach ($userRequests as $req) {
+                $userAppMap[$req['property_id']] = $req['status'];
+            }
+            foreach ($properties as &$p) {
+                $p['user_application_status'] = $userAppMap[$p['property_id']] ?? null;
+            }
+        }
+
         $this->render('public/marketplace', [
             'properties' => $properties,
             'city' => $city,
@@ -39,10 +52,24 @@ class PropertyController extends Controller {
         $reviewModel = new Review();
         $reviews = $reviewModel->findByProperty($propertyId);
 
+        $userAppStatus = null;
+        $user = Auth::user();
+        if ($user && $user['role'] === 'tenant') {
+            $requestModel = new RentalRequest();
+            $userRequests = $requestModel->findByTenant($user['user_id']);
+            foreach ($userRequests as $req) {
+                if ((int)$req['property_id'] === $propertyId) {
+                    $userAppStatus = $req['status'];
+                    break;
+                }
+            }
+        }
+
         $this->render('public/property_detail', [
             'property' => $property,
             'images' => $images,
             'reviews' => $reviews,
+            'user_app_status' => $userAppStatus,
             'csrf_token' => Auth::csrfToken()
         ]);
     }

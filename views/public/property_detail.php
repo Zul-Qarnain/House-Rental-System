@@ -21,7 +21,15 @@
         <div class="flex flex-col md:items-end">
             <span class="text-3xl font-bold text-on-surface">$<?= number_format($property['price_per_month'], 2) ?> <span class="text-sm font-normal text-on-surface-variant">/ month</span></span>
             <?php if (Auth::check() && Auth::user()['role'] === 'tenant'): ?>
-                <?php if ($property['availability_status'] === 'available'): ?>
+                <?php if (!empty($user_app_status) && $user_app_status === 'approved'): ?>
+                    <div class="mt-2 bg-tertiary-container text-on-tertiary-container px-4 py-2.5 rounded-lg font-bold flex items-center gap-2 shadow-sm text-sm">
+                        <span class="material-symbols-outlined text-[20px]">verified_user</span> Booked by You
+                    </div>
+                <?php elseif (!empty($user_app_status) && $user_app_status === 'pending'): ?>
+                    <div class="mt-2 bg-secondary-container text-on-secondary-container px-4 py-2.5 rounded-lg font-bold flex items-center gap-2 shadow-sm text-sm">
+                        <span class="material-symbols-outlined text-[20px]">pending</span> You Applied (Application Pending)
+                    </div>
+                <?php elseif ($property['availability_status'] === 'available'): ?>
                     <a href="/rentals/apply/<?= $property['property_id'] ?>" class="mt-2 bg-on-tertiary-container text-on-primary px-6 py-2.5 rounded-lg font-semibold hover:bg-tertiary-fixed hover:text-on-tertiary-fixed transition flex items-center gap-2 shadow-sm">
                         <span class="material-symbols-outlined text-[20px]">assignment_add</span> Apply to Rent
                     </a>
