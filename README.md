@@ -13,7 +13,7 @@ This project was built collaboratively by our team with dedicated module respons
 | **Zulqarnain** (Project Lead) | [@Zul-Qarnain](https://github.com/Zul-Qarnain) | Core MVC Architecture, Database Schema, Auth System, Tenant Portal & Public Marketplace |
 | **Naimul (Tashin)** | [@Tashin90](https://github.com/Tashin90) | Admin Control Desk, Property Approvals, Complaint Resolution Desk & Audit Trail (`admin_actions`) |
 | **Rahul** | [@Rahul53662](https://github.com/Rahul53662) | Property Owner Portfolio, Listing Form, Rental Request Inbox & Review Reply System |
-| **Labib** | [@Md-Mahir-Labib](https://github.com/Md-Mahir-Labib) | Broker Portal, Property Visit Walkthrough Scheduler, Commission Ledger & Direct Messaging |
+| **Labib** | [@Md-Mahir-Labib](https://github.com/Md-Mahir-Labib) | Broker Suite, Property Visit Walkthrough Scheduler, Commission Ledger & Direct Messaging |
 
 ---
 
