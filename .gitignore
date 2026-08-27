@@ -1,7 +1,7 @@
-all_data.txt
 .env
 config/config.local.php
 stitch_proptech_management_suite/
+all_data.txt
 PROJECT_BUILD_PROMPT.md
 db.schema
 *.png
