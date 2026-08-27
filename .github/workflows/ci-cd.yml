@@ -68,7 +68,7 @@ jobs:
           cat << 'EOF' > config/config.local.php
           <?php
           return [
-              'DB_HOST' => '${{ secrets.INFINITYFREE_DB_HOST }}',
+              'DB_HOST' => '${{ secrets.INFINITYFREE_DB_HOST || secrets.INFINITYFREE_DB_HOS }}',
               'DB_PORT' => 3306,
               'DB_NAME' => '${{ secrets.INFINITYFREE_DB_NAME }}',
               'DB_USER' => '${{ secrets.INFINITYFREE_DB_USER }}',
