@@ -27,6 +27,22 @@ echo "========================================\n\n";
 
 foreach ($testFiles as $file) {
     require_once $file;
+    $className = pathinfo($file, PATHINFO_FILENAME);
+    if ($className !== 'TestCase' && class_exists($className)) {
+        echo "Running {$className}... ";
+        try {
+            $testObj = new $className();
+            if (method_exists($testObj, 'run')) {
+                $testObj->run();
+            }
+            echo "\033[32mPASSED\033[0m\n";
+            $passed++;
+        } catch (Throwable $e) {
+            echo "\033[31mFAILED\033[0m\n";
+            echo "  --> " . $e->getMessage() . "\n";
+            $failed++;
+        }
+    }
 }
 
 $userFunctions = get_defined_functions()['user'];
