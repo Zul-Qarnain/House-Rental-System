@@ -2,8 +2,7 @@
 config/config.local.php
 stitch_proptech_management_suite/
 all_data.txt
-PROJECT_BUILD_PROMPT.md
-PROJECT_ARCHITECTURE_EXPLANATION.md
+*.md
 database_schema.mmd
 db.schema
 *.png
@@ -13,3 +12,5 @@ aiven-ca.pem
 config/aiven-ca.pem
 *.log
 .DS_Store
+*.txt
+*.pdf
