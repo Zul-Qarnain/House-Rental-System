@@ -46,6 +46,19 @@
                 <div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col">
                     <div class="relative h-48 bg-surface-container-highest">
                         <img src="<?= htmlspecialchars($prop['cover_image'] ?? 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80') ?>" alt="<?= htmlspecialchars($prop['title']) ?>" class="w-full h-full object-cover"/>
+                        
+                        <?php if (!empty($prop['user_application_status'])): ?>
+                            <?php if ($prop['user_application_status'] === 'approved'): ?>
+                                <span class="absolute top-3 left-3 bg-tertiary-container text-on-tertiary-container text-xs px-2.5 py-1 rounded-full font-bold shadow-sm flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[14px]">verified_user</span> Booked by You
+                                </span>
+                            <?php elseif ($prop['user_application_status'] === 'pending'): ?>
+                                <span class="absolute top-3 left-3 bg-secondary-container text-on-secondary-container text-xs px-2.5 py-1 rounded-full font-bold shadow-sm flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[14px]">pending</span> You Applied (Pending)
+                                </span>
+                            <?php endif; ?>
+                        <?php endif; ?>
+
                         <span class="absolute top-3 right-3 bg-tertiary-container text-on-tertiary-container text-xs px-2.5 py-1 rounded-full font-semibold">
                             $<?= number_format($prop['price_per_month'], 2) ?>/mo
                         </span>
@@ -63,7 +76,7 @@
                                 <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">square_foot</span> <?= number_format((float)$prop['area_sqft']) ?> sqft</span>
                             </div>
                             <a href="/property/<?= $prop['property_id'] ?>" class="block text-center w-full bg-surface-container-high hover:bg-primary-container hover:text-on-primary text-on-surface py-2 rounded-lg font-medium text-sm transition">
-                                View Details & Request Lease
+                                <?= (!empty($prop['user_application_status']) && $prop['user_application_status'] === 'approved') ? 'View My Booked Home' : 'View Details & Apply' ?>
                             </a>
                         </div>
                     </div>

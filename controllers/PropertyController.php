@@ -16,6 +16,19 @@ class PropertyController extends Controller {
 
         $properties = $this->propertyModel->search($city, $minPrice, $maxPrice, $bedrooms);
 
+        $user = Auth::user();
+        if ($user && $user['role'] === 'tenant') {
+            $requestModel = new RentalRequest();
+            $userRequests = $requestModel->findByTenant($user['user_id']);
+            $userAppMap = [];
+            foreach ($userRequests as $req) {
+                $userAppMap[$req['property_id']] = $req['status'];
+            }
+            foreach ($properties as &$p) {
+                $p['user_application_status'] = $userAppMap[$p['property_id']] ?? null;
+            }
+        }
+
         $this->render('public/marketplace', [
             'properties' => $properties,
             'city' => $city,
@@ -39,16 +52,30 @@ class PropertyController extends Controller {
         $reviewModel = new Review();
         $reviews = $reviewModel->findByProperty($propertyId);
 
+        $userAppStatus = null;
+        $user = Auth::user();
+        if ($user && $user['role'] === 'tenant') {
+            $requestModel = new RentalRequest();
+            $userRequests = $requestModel->findByTenant($user['user_id']);
+            foreach ($userRequests as $req) {
+                if ((int)$req['property_id'] === $propertyId) {
+                    $userAppStatus = $req['status'];
+                    break;
+                }
+            }
+        }
+
         $this->render('public/property_detail', [
             'property' => $property,
             'images' => $images,
             'reviews' => $reviews,
+            'user_app_status' => $userAppStatus,
             'csrf_token' => Auth::csrfToken()
         ]);
     }
 
     public function showCreateForm(): void {
-        Auth::requireRole('owner', 'broker');
+        Auth::requireRole('owner');
         $this->render('owner/property_form', [
             'csrf_token' => Auth::csrfToken(),
             'property' => null
@@ -56,7 +83,7 @@ class PropertyController extends Controller {
     }
 
     public function processCreate(): void {
-        Auth::requireRole('owner', 'broker');
+        Auth::requireRole('owner');
         if (!Auth::verifyCsrf($_POST['csrf_token'] ?? '')) {
             http_response_code(400);
             echo "Invalid CSRF token.";
@@ -64,16 +91,9 @@ class PropertyController extends Controller {
         }
 
         $user = Auth::user();
-        $ownerId = $user['role'] === 'owner' ? $user['user_id'] : (int)($_POST['owner_id'] ?? 0);
-
-        if ($user['role'] === 'broker' && !$ownerId) {
-            http_response_code(400);
-            echo "Broker must specify property owner_id.";
-            return;
-        }
 
         $data = [
-            'owner_id' => $ownerId,
+            'owner_id' => $user['user_id'],
             'title' => trim($_POST['title'] ?? ''),
             'description' => trim($_POST['description'] ?? ''),
             'address_line' => trim($_POST['address_line'] ?? ''),
@@ -91,7 +111,8 @@ class PropertyController extends Controller {
             $this->imageModel->addImage($propertyId, trim($_POST['cover_image_url']), true);
         }
 
-        $this->redirect($user['role'] === 'owner' ? '/owner/dashboard' : '/broker/dashboard');
+        $_SESSION['success'] = "Property '{$data['title']}' created successfully!";
+        $this->redirect('/owner/dashboard');
     }
 
     public function toggleAvailability(): void {
@@ -108,6 +129,36 @@ class PropertyController extends Controller {
         $property = $this->propertyModel->findById($propertyId);
         if ($property && $property['owner_id'] === Auth::user()['user_id']) {
             $this->propertyModel->updateStatus($propertyId, $status);
+            $_SESSION['success'] = "Property status updated to {$status}.";
+        }
+
+        $this->redirect('/owner/dashboard');
+    }
+
+    public function assignBroker(): void {
+        Auth::requireRole('owner');
+        if (!Auth::verifyCsrf($_POST['csrf_token'] ?? '')) {
+            http_response_code(400);
+            echo "Invalid CSRF token.";
+            return;
+        }
+
+        $propertyId = (int)($_POST['property_id'] ?? 0);
+        $brokerId = (int)($_POST['broker_id'] ?? 0);
+
+        $property = $this->propertyModel->findById($propertyId);
+        if (!$property || $property['owner_id'] !== Auth::user()['user_id']) {
+            $_SESSION['error'] = "Unauthorized or property not found.";
+            $this->redirect('/owner/dashboard');
+            return;
+        }
+
+        $assignmentModel = new BrokerAssignment();
+        try {
+            $assignmentModel->assign($brokerId, $propertyId);
+            $_SESSION['success'] = "Broker assigned successfully to '{$property['title']}'.";
+        } catch (Exception $e) {
+            $_SESSION['error'] = "Failed to assign broker: " . $e->getMessage();
         }
 
         $this->redirect('/owner/dashboard');

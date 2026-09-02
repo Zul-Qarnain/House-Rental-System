@@ -21,7 +21,15 @@
         <div class="flex flex-col md:items-end">
             <span class="text-3xl font-bold text-on-surface">$<?= number_format($property['price_per_month'], 2) ?> <span class="text-sm font-normal text-on-surface-variant">/ month</span></span>
             <?php if (Auth::check() && Auth::user()['role'] === 'tenant'): ?>
-                <?php if ($property['availability_status'] === 'available'): ?>
+                <?php if (!empty($user_app_status) && $user_app_status === 'approved'): ?>
+                    <div class="mt-2 bg-tertiary-container text-on-tertiary-container px-4 py-2.5 rounded-lg font-bold flex items-center gap-2 shadow-sm text-sm">
+                        <span class="material-symbols-outlined text-[20px]">verified_user</span> Booked by You
+                    </div>
+                <?php elseif (!empty($user_app_status) && $user_app_status === 'pending'): ?>
+                    <div class="mt-2 bg-secondary-container text-on-secondary-container px-4 py-2.5 rounded-lg font-bold flex items-center gap-2 shadow-sm text-sm">
+                        <span class="material-symbols-outlined text-[20px]">pending</span> You Applied (Application Pending)
+                    </div>
+                <?php elseif ($property['availability_status'] === 'available'): ?>
                     <a href="/rentals/apply/<?= $property['property_id'] ?>" class="mt-2 bg-on-tertiary-container text-on-primary px-6 py-2.5 rounded-lg font-semibold hover:bg-tertiary-fixed hover:text-on-tertiary-fixed transition flex items-center gap-2 shadow-sm">
                         <span class="material-symbols-outlined text-[20px]">assignment_add</span> Apply to Rent
                     </a>
@@ -110,7 +118,7 @@
             </div>
         </div>
 
-        <!-- Sidebar / Contact Host -->
+        <!-- Sidebar / Contact Host & Request Visit -->
         <div class="space-y-6">
             <div class="bg-surface-container-lowest border border-outline-variant p-6 rounded-xl shadow-sm">
                 <h3 class="font-headline-lg text-lg font-semibold text-on-surface mb-3">Property Representative</h3>
@@ -131,6 +139,39 @@
                 <?php else: ?>
                     <a href="/login" class="w-full bg-surface-container-high hover:bg-outline-variant text-on-surface py-2.5 rounded-lg font-medium text-sm transition text-center block">
                         Sign in to message host
+                    </a>
+                <?php endif; ?>
+            </div>
+
+            <!-- Request Property Walkthrough Visit Form -->
+            <div class="bg-surface-container-lowest border border-outline-variant p-6 rounded-xl shadow-sm">
+                <h3 class="font-headline-lg text-lg font-semibold text-on-surface mb-3 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-on-tertiary-container">calendar_month</span> Request Walkthrough Visit
+                </h3>
+                <p class="text-xs text-on-surface-variant mb-4">Request a date and time to visit this property. The homeowner will assign a licensed broker to conduct your walkthrough.</p>
+                
+                <?php if (Auth::check() && Auth::user()['role'] === 'tenant'): ?>
+                    <form action="/tenant/visits/request" method="POST" class="flex flex-col gap-3">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
+                        <input type="hidden" name="property_id" value="<?= $property['property_id'] ?>">
+                        
+                        <div>
+                            <label class="text-xs font-semibold text-on-surface uppercase mb-1 block">Preferred Date & Time</label>
+                            <input type="datetime-local" name="scheduled_at" required class="w-full text-xs px-3 py-2 border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface font-body-md"/>
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-semibold text-on-surface uppercase mb-1 block">Notes for Visit</label>
+                            <textarea name="notes" rows="2" placeholder="e.g. Interested in morning visit..." class="w-full text-xs px-3 py-2 border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface font-body-md"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full bg-on-tertiary-container text-on-primary py-2.5 rounded-lg font-semibold text-sm hover:bg-tertiary-fixed hover:text-on-tertiary-fixed transition flex items-center justify-center gap-2 shadow-sm">
+                            <span class="material-symbols-outlined text-[18px]">event_available</span> Request Walkthrough Visit
+                        </button>
+                    </form>
+                <?php elseif (!Auth::check()): ?>
+                    <a href="/login" class="w-full bg-primary-container text-on-primary py-2.5 rounded-lg font-semibold text-sm transition text-center block">
+                        Sign in to Schedule Visit
                     </a>
                 <?php endif; ?>
             </div>

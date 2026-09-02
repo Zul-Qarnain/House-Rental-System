@@ -3,17 +3,45 @@
 <main class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1">
     <div class="mb-8 flex items-center justify-between">
         <div>
-            <h1 class="font-headline-xl text-2xl font-bold text-on-surface">Property Owner Dashboard</h1>
-            <p class="text-sm text-on-surface-variant">Manage your property portfolio, rental applications, and reviews.</p>
+            <h1 class="font-headline-xl text-2xl font-bold text-on-surface flex items-center gap-2">
+                <span class="material-symbols-outlined text-[28px] text-on-tertiary-container">home_work</span>
+                Property Owner Dashboard
+            </h1>
+            <p class="text-sm text-on-surface-variant mt-1">Manage your property portfolio, broker assignments, rental applications, and reviews.</p>
         </div>
         <a href="/properties/create" class="bg-on-tertiary-container text-on-primary px-4 py-2 rounded-lg text-sm font-semibold hover:bg-tertiary-fixed hover:text-on-tertiary-fixed transition flex items-center gap-1">
             <span class="material-symbols-outlined text-[18px]">add</span> Add New Property
         </a>
     </div>
 
+    <?php if (isset($_SESSION['success'])): ?>
+        <div class="mb-6 p-4 rounded-xl bg-tertiary-container text-on-tertiary-container border border-tertiary-fixed text-sm font-semibold flex items-center justify-between shadow-sm">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined">check_circle</span>
+                <span><?= htmlspecialchars($_SESSION['success']) ?></span>
+            </div>
+            <button onclick="this.parentElement.remove()" class="text-on-tertiary-container hover:opacity-75">&times;</button>
+        </div>
+        <?php unset($_SESSION['success']); ?>
+    <?php endif; ?>
+
+    <?php if (isset($_SESSION['error'])): ?>
+        <div class="mb-6 p-4 rounded-xl bg-error-container text-on-error-container border border-error/30 text-sm font-semibold flex items-center justify-between shadow-sm">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined">error</span>
+                <span><?= htmlspecialchars($_SESSION['error']) ?></span>
+            </div>
+            <button onclick="this.parentElement.remove()" class="text-on-error-container hover:opacity-75">&times;</button>
+        </div>
+        <?php unset($_SESSION['error']); ?>
+    <?php endif; ?>
+
     <!-- Properties Portfolio Grid -->
     <div class="mb-10">
-        <h2 class="text-lg font-bold text-on-surface mb-4">My Property Portfolio</h2>
+        <h2 class="text-lg font-bold text-on-surface mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-[20px]">domain</span>
+            My Property Portfolio
+        </h2>
         <?php if (empty($properties)): ?>
             <div class="bg-surface-container-lowest border border-outline-variant p-8 rounded-xl text-center">
                 <p class="text-sm text-on-surface-variant mb-4">No properties listed yet.</p>
@@ -26,28 +54,55 @@
                         <div>
                             <div class="flex justify-between items-start mb-2">
                                 <h3 class="font-bold text-on-surface text-lg"><?= htmlspecialchars($p['title']) ?></h3>
-                                <span class="text-sm font-bold text-on-surface">$<?= number_format($p['price_per_month'], 2) ?></span>
+                                <span class="text-sm font-bold text-on-surface">$<?= number_format($p['price_per_month'], 2) ?>/mo</span>
                             </div>
                             <p class="text-xs text-on-surface-variant mb-3"><?= htmlspecialchars($p['address_line']) ?>, <?= htmlspecialchars($p['city']) ?></p>
                             
                             <div class="flex items-center gap-2 mb-4">
-                                <span class="text-xs font-semibold px-2 py-0.5 rounded <?= $p['is_approved'] ? 'bg-tertiary-container text-on-tertiary-container' : 'bg-error-container text-on-error-container' ?>">
-                                    <?= $p['is_approved'] ? 'Approved' : 'Pending Admin Approval' ?>
+                                <span class="text-xs font-semibold px-2.5 py-1 rounded-full <?= $p['is_approved'] ? 'bg-tertiary-container text-on-tertiary-container' : 'bg-error-container text-on-error-container' ?>">
+                                    <?= $p['is_approved'] ? 'Approved' : 'Pending Approval' ?>
                                 </span>
                             </div>
                         </div>
 
-                        <div class="border-t border-outline-variant/60 pt-4">
+                        <div class="border-t border-outline-variant/60 pt-4 space-y-3">
                             <!-- Toggle Availability Status Form -->
-                            <form action="/properties/toggle-status" method="POST" class="flex items-center gap-2">
+                            <form action="/properties/toggle-status" method="POST" class="flex items-center justify-between">
                                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
                                 <input type="hidden" name="property_id" value="<?= $p['property_id'] ?>">
                                 <label class="text-xs font-semibold text-on-surface-variant uppercase">Status:</label>
-                                <select name="availability_status" onchange="this.form.submit()" class="text-xs py-1 px-2 border border-outline-variant rounded bg-surface-container-lowest text-on-surface font-semibold">
+                                <select name="availability_status" onchange="this.form.submit()" class="text-xs py-1 px-2 border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface font-semibold">
                                     <option value="available" <?= $p['availability_status'] === 'available' ? 'selected' : '' ?>>Available</option>
                                     <option value="pending" <?= $p['availability_status'] === 'pending' ? 'selected' : '' ?>>Pending</option>
                                     <option value="rented" <?= $p['availability_status'] === 'rented' ? 'selected' : '' ?>>Rented</option>
                                 </select>
+                            </form>
+
+                            <!-- Homeowner Broker Management Form -->
+                            <form action="/owner/properties/assign-broker" method="POST" class="flex flex-col gap-1">
+                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
+                                <input type="hidden" name="property_id" value="<?= $p['property_id'] ?>">
+                                <div class="flex items-center justify-between text-xs">
+                                    <label class="font-semibold text-on-surface-variant uppercase">Assigned Broker:</label>
+                                    <?php if (!empty($p['active_broker'])): ?>
+                                        <span class="font-bold text-on-tertiary-container"><?= htmlspecialchars($p['active_broker']['broker_name']) ?></span>
+                                    <?php else: ?>
+                                        <span class="text-outline italic">None</span>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="flex gap-1 items-center mt-1">
+                                    <select name="broker_id" required class="flex-1 text-xs px-2 py-1.5 border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface">
+                                        <option value="">-- Select Broker --</option>
+                                        <?php foreach ($brokers as $b): ?>
+                                            <option value="<?= $b['user_id'] ?>" <?= (!empty($p['active_broker']) && $p['active_broker']['broker_id'] == $b['user_id']) ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($b['name']) ?> (#<?= $b['user_id'] ?>)
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <button type="submit" class="bg-primary-container text-on-primary text-xs px-3 py-1.5 rounded-lg font-semibold hover:bg-on-primary-fixed transition-colors">
+                                        <?= !empty($p['active_broker']) ? 'Change' : 'Assign' ?>
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -58,7 +113,10 @@
 
     <!-- Rental Requests Desk -->
     <div class="mb-10">
-        <h2 class="text-lg font-bold text-on-surface mb-4">Incoming Rental Applications</h2>
+        <h2 class="text-lg font-bold text-on-surface mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-[20px]">inbox</span>
+            Incoming Rental Applications
+        </h2>
         <?php if (empty($requests)): ?>
             <div class="bg-surface-container-lowest border border-outline-variant p-6 rounded-xl text-sm text-on-surface-variant">
                 No rental applications currently pending.
@@ -77,15 +135,15 @@
                     </thead>
                     <tbody class="divide-y divide-outline-variant/50">
                         <?php foreach ($requests as $req): ?>
-                            <tr>
+                            <tr class="hover:bg-surface-container-low/50 transition-colors">
                                 <td class="p-4 font-semibold text-on-surface"><?= htmlspecialchars($req['property_title']) ?></td>
                                 <td class="p-4 text-on-surface">
-                                    <div><?= htmlspecialchars($req['tenant_name']) ?></div>
+                                    <div class="font-semibold"><?= htmlspecialchars($req['tenant_name']) ?></div>
                                     <div class="text-xs text-on-surface-variant"><?= htmlspecialchars($req['tenant_email']) ?></div>
                                 </td>
                                 <td class="p-4 text-on-surface-variant"><?= htmlspecialchars($req['requested_move_in'] ?? 'N/A') ?></td>
                                 <td class="p-4">
-                                    <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase 
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold uppercase 
                                         <?= $req['status'] === 'approved' ? 'bg-tertiary-container text-on-tertiary-container' : ($req['status'] === 'rejected' ? 'bg-error-container text-on-error-container' : 'bg-secondary-container text-on-secondary-container') ?>">
                                         <?= htmlspecialchars($req['status']) ?>
                                     </span>
@@ -95,8 +153,8 @@
                                         <form action="/rentals/decision" method="POST" class="inline-flex gap-2">
                                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
                                             <input type="hidden" name="request_id" value="<?= $req['request_id'] ?>">
-                                            <button type="submit" name="decision" value="approved" class="bg-tertiary-container text-on-tertiary-container text-xs px-3 py-1.5 rounded font-semibold hover:bg-tertiary-fixed">Approve</button>
-                                            <button type="submit" name="decision" value="rejected" class="bg-error-container text-on-error-container text-xs px-3 py-1.5 rounded font-semibold hover:bg-error/20">Reject</button>
+                                            <button type="submit" name="decision" value="approved" class="bg-tertiary-container text-on-tertiary-container text-xs px-3 py-1.5 rounded-lg font-semibold hover:bg-tertiary-fixed transition-colors">Approve</button>
+                                            <button type="submit" name="decision" value="rejected" class="bg-error-container text-on-error-container text-xs px-3 py-1.5 rounded-lg font-semibold hover:bg-error/20 transition-colors">Reject</button>
                                         </form>
                                     <?php else: ?>
                                         <span class="text-xs text-outline italic">Decision Recorded</span>
@@ -112,7 +170,10 @@
 
     <!-- Reviews & Owner Reply Section -->
     <div>
-        <h2 class="text-lg font-bold text-on-surface mb-4">Property Reviews & Replies</h2>
+        <h2 class="text-lg font-bold text-on-surface mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-[20px]">rate_review</span>
+            Property Reviews & Replies
+        </h2>
         <?php if (empty($reviews)): ?>
             <div class="bg-surface-container-lowest border border-outline-variant p-6 rounded-xl text-sm text-on-surface-variant">
                 No reviews received yet.
@@ -139,8 +200,8 @@
                             <form action="/reviews/reply" method="POST" class="mt-3 flex gap-2">
                                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
                                 <input type="hidden" name="review_id" value="<?= $rev['review_id'] ?>">
-                                <input type="text" name="reply_text" placeholder="Write a response..." required class="flex-1 text-xs px-3 py-1.5 border border-outline-variant rounded bg-surface-container-lowest"/>
-                                <button type="submit" class="bg-primary-container text-on-primary text-xs px-4 py-1.5 rounded font-semibold hover:bg-on-primary-fixed">Reply</button>
+                                <input type="text" name="reply_text" placeholder="Write a response..." required class="flex-1 text-xs px-3 py-1.5 border border-outline-variant rounded-lg bg-surface-container-lowest"/>
+                                <button type="submit" class="bg-primary-container text-on-primary text-xs px-4 py-1.5 rounded-lg font-semibold hover:bg-on-primary-fixed transition-colors">Reply</button>
                             </form>
                         <?php endif; ?>
                     </div>

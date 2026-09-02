@@ -2,7 +2,8 @@
 class Auth {
     public static function start(): void {
         if (session_status() === PHP_SESSION_NONE) {
-            session_start();
+            @ini_set('session.gc_probability', 0);
+            @session_start();
         }
     }
 

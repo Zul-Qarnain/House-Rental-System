@@ -4,10 +4,10 @@
         <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80')"></div>
         <div class="absolute inset-0 bg-primary-container/40 mix-blend-multiply"></div>
         <div class="absolute inset-0 p-margin-desktop flex flex-col justify-between z-10">
-            <div class="flex items-center gap-3">
+            <a href="/" class="flex items-center gap-3 w-fit hover:opacity-90 transition-opacity">
                 <span class="material-symbols-outlined text-on-primary text-[32px]">domain</span>
                 <h1 class="font-headline-lg text-headline-lg text-on-primary tracking-tight">PropTech OS</h1>
-            </div>
+            </a>
             <div class="max-w-md">
                 <h2 class="font-headline-xl text-headline-xl text-on-primary mb-4 leading-tight">Elevate your portfolio management.</h2>
                 <p class="font-body-md text-body-md text-on-primary/80">Streamline operations, optimize occupancy, and maximize yield with our modern, data-driven platform.</p>

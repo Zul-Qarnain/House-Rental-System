@@ -45,6 +45,7 @@ $router->add('POST', '/reset-password', 'AuthController@processResetPassword');
 $router->add('GET', '/tenant/dashboard', 'RentalController@tenantDashboard');
 $router->add('GET', '/rentals/apply/:id', 'RentalController@showApplicationForm');
 $router->add('POST', '/rentals/apply', 'RentalController@processRequest');
+$router->add('POST', '/tenant/visits/request', 'RentalController@requestVisit');
 $router->add('POST', '/reviews/submit', 'ReviewController@processSubmit');
 
 // Owner Routes
@@ -52,6 +53,8 @@ $router->add('GET', '/owner/dashboard', 'RentalController@ownerDashboard');
 $router->add('GET', '/properties/create', 'PropertyController@showCreateForm');
 $router->add('POST', '/properties/create', 'PropertyController@processCreate');
 $router->add('POST', '/properties/toggle-status', 'PropertyController@toggleAvailability');
+$router->add('POST', '/owner/properties/assign-broker', 'PropertyController@assignBroker');
+$router->add('POST', '/owner/visits/assign-broker', 'RentalController@assignVisitBroker');
 $router->add('POST', '/rentals/decision', 'RentalController@processDecision');
 $router->add('POST', '/reviews/reply', 'ReviewController@processReply');
 
@@ -64,7 +67,6 @@ $router->add('POST', '/broker/visits/status', 'BrokerController@updateVisitStatu
 $router->add('GET', '/admin/users', 'AdminController@users');
 $router->add('POST', '/admin/users/status', 'AdminController@toggleUserStatus');
 $router->add('POST', '/admin/properties/approve', 'AdminController@approveProperty');
-$router->add('POST', '/admin/properties/assign-broker', 'AdminController@assignBroker');
 $router->add('POST', '/admin/complaints/resolve', 'AdminController@resolveComplaint');
 
 // Shared Messaging & Notification Routes

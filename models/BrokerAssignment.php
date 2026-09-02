@@ -1,6 +1,10 @@
 <?php
 class BrokerAssignment extends Model {
     public function assign(int $brokerId, int $propertyId): int {
+        // Automatically deactivate any previous active broker assignment on this property
+        $unassignStmt = $this->db->prepare("UPDATE broker_assignments SET unassigned_at = NOW() WHERE property_id = ? AND unassigned_at IS NULL");
+        $unassignStmt->execute([$propertyId]);
+
         $stmt = $this->db->prepare("INSERT INTO broker_assignments (broker_id, property_id) VALUES (?, ?)");
         $stmt->execute([$brokerId, $propertyId]);
         return (int)$this->db->lastInsertId();

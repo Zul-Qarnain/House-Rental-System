@@ -1,9 +1,11 @@
 <?php
 class MessageController extends Controller {
     private Message $messageModel;
+    private Notification $notificationModel;
 
     public function __construct() {
         $this->messageModel = new Message();
+        $this->notificationModel = new Notification();
     }
 
     public function index(): void {
@@ -46,7 +48,17 @@ class MessageController extends Controller {
         $content = trim($_POST['content'] ?? '');
 
         if ($receiverId && !empty($content) && $sender['user_id'] !== $receiverId) {
-            $this->messageModel->send($sender['user_id'], $receiverId, $propertyId, $content);
+            $messageId = $this->messageModel->send($sender['user_id'], $receiverId, $propertyId, $content);
+            
+            // Generate live Notification for the recipient when a new message arrives!
+            $snippet = mb_strimwidth($content, 0, 50, "...");
+            $this->notificationModel->create(
+                $receiverId,
+                'new_message',
+                "New message from {$sender['name']}: \"{$snippet}\"",
+                'message',
+                $messageId
+            );
         }
 
         $this->redirect("/messages?with={$receiverId}");
