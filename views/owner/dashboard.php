@@ -38,19 +38,29 @@
 
     <!-- Properties Portfolio Grid -->
     <div class="mb-10">
-        <h2 class="text-lg font-bold text-on-surface mb-4 flex items-center gap-2">
-            <span class="material-symbols-outlined text-[20px]">domain</span>
-            My Property Portfolio
-        </h2>
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
+            <h2 class="text-lg font-bold text-on-surface flex items-center gap-2">
+                <span class="material-symbols-outlined text-[20px]">domain</span>
+                My Property Portfolio
+            </h2>
+            <!-- NEW FRONTEND FEATURE: Property Search Bar -->
+            <div class="relative w-full sm:w-72">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+                <input type="text" id="propertySearch" placeholder="Search by title or city..." 
+                       class="w-full pl-9 pr-4 py-2 text-sm border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface focus:outline-none focus:ring-2 focus:ring-primary-container transition-shadow">
+            </div>
+        </div>
+
         <?php if (empty($properties)): ?>
             <div class="bg-surface-container-lowest border border-outline-variant p-8 rounded-xl text-center">
                 <p class="text-sm text-on-surface-variant mb-4">No properties listed yet.</p>
                 <a href="/properties/create" class="inline-block bg-primary-container text-on-primary px-4 py-2 rounded-lg text-sm font-semibold">List Your First Property</a>
             </div>
         <?php else: ?>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="propertyGrid">
                 <?php foreach ($properties as $p): ?>
-                    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm flex flex-col justify-between">
+                    <!-- Added 'property-card' class for JS filtering -->
+                    <div class="property-card bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm flex flex-col justify-between">
                         <div>
                             <div class="flex justify-between items-start mb-2">
                                 <h3 class="font-bold text-on-surface text-lg"><?= htmlspecialchars($p['title']) ?></h3>
@@ -108,15 +118,28 @@
                     </div>
                 <?php endforeach; ?>
             </div>
+            <!-- Hidden message for when search yields no results -->
+            <div id="noPropertyResults" class="hidden mt-6 p-6 rounded-xl bg-surface-container-lowest border border-outline-variant text-center text-sm text-on-surface-variant">
+                No properties match your search.
+            </div>
         <?php endif; ?>
     </div>
 
     <!-- Rental Requests Desk -->
     <div class="mb-10">
-        <h2 class="text-lg font-bold text-on-surface mb-4 flex items-center gap-2">
-            <span class="material-symbols-outlined text-[20px]">inbox</span>
-            Incoming Rental Applications
-        </h2>
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
+            <h2 class="text-lg font-bold text-on-surface flex items-center gap-2">
+                <span class="material-symbols-outlined text-[20px]">inbox</span>
+                Incoming Rental Applications
+            </h2>
+            <!-- NEW FRONTEND FEATURE: Application Search Bar -->
+            <div class="relative w-full sm:w-72">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+                <input type="text" id="requestSearch" placeholder="Search by tenant or property..." 
+                       class="w-full pl-9 pr-4 py-2 text-sm border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface focus:outline-none focus:ring-2 focus:ring-primary-container transition-shadow">
+            </div>
+        </div>
+
         <?php if (empty($requests)): ?>
             <div class="bg-surface-container-lowest border border-outline-variant p-6 rounded-xl text-sm text-on-surface-variant">
                 No rental applications currently pending.
@@ -133,9 +156,10 @@
                             <th class="p-4 font-semibold text-right">Action</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-outline-variant/50">
+                    <tbody class="divide-y divide-outline-variant/50" id="requestTableBody">
                         <?php foreach ($requests as $req): ?>
-                            <tr class="hover:bg-surface-container-low/50 transition-colors">
+                            <!-- Added 'request-row' class for JS filtering -->
+                            <tr class="request-row hover:bg-surface-container-low/50 transition-colors">
                                 <td class="p-4 font-semibold text-on-surface"><?= htmlspecialchars($req['property_title']) ?></td>
                                 <td class="p-4 text-on-surface">
                                     <div class="font-semibold"><?= htmlspecialchars($req['tenant_name']) ?></div>
@@ -164,6 +188,10 @@
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+            </div>
+            <!-- Hidden message for when search yields no results -->
+            <div id="noRequestResults" class="hidden mt-4 p-6 rounded-xl bg-surface-container-lowest border border-outline-variant text-center text-sm text-on-surface-variant">
+                No applications match your search.
             </div>
         <?php endif; ?>
     </div>
@@ -210,4 +238,62 @@
         <?php endif; ?>
     </div>
 </main>
+
+<!-- NEW FRONTEND FEATURE: Live Search JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. Property Portfolio Search
+        const propertySearch = document.getElementById('propertySearch');
+        if (propertySearch) {
+            propertySearch.addEventListener('input', function(e) {
+                const term = e.target.value.toLowerCase();
+                const cards = document.querySelectorAll('.property-card');
+                let visibleCount = 0;
+
+                cards.forEach(card => {
+                    const text = card.innerText.toLowerCase();
+                    if (text.includes(term)) {
+                        card.style.display = '';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                // Show/hide "No results" message
+                const noResultsMsg = document.getElementById('noPropertyResults');
+                if (noResultsMsg) {
+                    noResultsMsg.classList.toggle('hidden', visibleCount > 0);
+                }
+            });
+        }
+
+        // 2. Rental Applications Search
+        const requestSearch = document.getElementById('requestSearch');
+        if (requestSearch) {
+            requestSearch.addEventListener('input', function(e) {
+                const term = e.target.value.toLowerCase();
+                const rows = document.querySelectorAll('.request-row');
+                let visibleCount = 0;
+
+                rows.forEach(row => {
+                    const text = row.innerText.toLowerCase();
+                    if (text.includes(term)) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                // Show/hide "No results" message
+                const noResultsMsg = document.getElementById('noRequestResults');
+                if (noResultsMsg) {
+                    noResultsMsg.classList.toggle('hidden', visibleCount > 0);
+                }
+            });
+        }
+    });
+</script>
+
 <?php require __DIR__ . '/../layout/footer.php'; ?>
