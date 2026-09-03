@@ -1,9 +1,0 @@
-<?php
-return [
-    'DB_HOST' => 'mysql-2c3e8e18-alexanderthegreyhathacker-7cec.i.aivencloud.com',
-    'DB_PORT' => 27476,
-    'DB_NAME' => 'defaultdb',
-    'DB_USER' => 'avnadmin',
-    'DB_PASS' => 'REPLACE_ME_LOCALLY',
-    'DB_SSL_CA' => __DIR__ . '/aiven-ca.pem',
-];
